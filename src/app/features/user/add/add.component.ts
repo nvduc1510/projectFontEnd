@@ -1,15 +1,13 @@
-import { CustomValidatorComponent } from './../../valid/custom-validator/custom-validator.component';
 import { HttpClient } from '@angular/common/http';
-import { Component, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
-import { Certification } from 'src/app/model/certification';
 import { Department } from 'src/app/model/department';
-import { EmployeeCertification } from 'src/app/model/employeeCertification';
 import { CertificationService } from 'src/app/service/certification.service';
 import { DepartmentService } from 'src/app/service/department.service';
 import { ShareDateService } from 'src/app/service/share-date.service';
+import { CustomValidatorComponent } from './../../valid/custom-validator/custom-validator.component';
 
 @Component({
   selector: 'app-add',
@@ -53,24 +51,34 @@ export class AddComponent {
       employeeLoginPasswordConfirm : ['', [CustomValidatorComponent.ValidLoginPasswordConfirm]],
       certifications : this.fb.group({
         certificationId : [''],
-        certificationStartDate : [''],
-        certificationEndDate : [''],
+        certificationStartDate : ['',],
+        certificationEndDate : ['', ],
         employeeCertificationScore : ['',]
+      },
+      {
+        validators: CustomValidatorComponent.certificateDateValidator,
       })
     },{
       validator : CustomValidatorComponent.ConfirmPassword,
+      
     })
     
     this.getListCertification();
     this.getListDepartment();
 
-    
     //Thực hiện lấy dữ liệu từ shareData
     const saveData = this.shareData.getData();
+    const certificationId = saveData?.certifications?.certificationId;
+    if(certificationId){
+      this.hadCertification = true;
+    }
     // Gán dữ liệu vào form
     this.data.patchValue(saveData); 
+    console.log("save: ", saveData);
+    console.log(' this.hadCertification: ',  this.hadCertification);
+    
+    
   }
-  
 
   /**
    * Lấy danh sách department
@@ -117,9 +125,9 @@ export class AddComponent {
     const certification = this.data.get('certifications');
     if(certificationId){
       this.hadCertification = true;
-      // thay cai hamf valid cua em muon set vao
-      certification?.get('certificationEndDate')?.setValidators(CustomValidatorComponent.ValidEmployeeBirthDate);
-      certification?.get('certificationEndDate')?.setValidators(CustomValidatorComponent.certificateDateValidator);
+
+      certification?.get('certificationStartDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
+      certification?.get('certificationEndDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
       certification?.get('employeeCertificationScore')?.setValidators(CustomValidatorComponent.ValidScore);
     }else{
       this.hadCertification = false;
@@ -136,4 +144,5 @@ export class AddComponent {
     certification?.get('certificationEndDate')?.updateValueAndValidity();
     certification?.get('employeeCertificationScore')?.updateValueAndValidity();
   }
+  
 }

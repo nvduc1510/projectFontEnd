@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ValidatorFn,AbstractControl, FormGroup,ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MessageComponent } from '../message/message.component';
 
 @Component({
@@ -64,7 +64,7 @@ export class CustomValidatorComponent {
 
   static ValidEmployeeNameKana (c : AbstractControl) : MessageComponent | null {
     const employeeNameKana = c.value
-    const kanaHalfSize = /^[ｦ-ﾟ]+$/;
+    const kanaHalfSize = /^[\u30A0-\u30FFー]+$/;
     if(!employeeNameKana){
       return {
         code : 'ER001',
@@ -87,19 +87,19 @@ export class CustomValidatorComponent {
 
   static ValidEmployeeBirthDate ( c : AbstractControl) : MessageComponent | null {
     const birthDate = c.value
-    const formDate = /^\d{4}\/\d{2}\/\d{2}$/
+    // const formDate = /^\d{4}\/\d{2}\/\d{2}$/
     if(!birthDate){
       return {
         code : 'ER001',
         params : '画面項目名」を入力してください [ER001]'
       }
     }
-    if(!formDate.test(birthDate)){
-      return { 
-        code: 'ER011',
-        params: '「画面項目名」は無効になっています。[ER011]'
-      }
-    }
+    // if(!formDate.test(birthDate)){
+    //   return { 
+    //     code: 'ER011',
+    //     params: '「画面項目名」は無効になっています。[ER011]'
+    //   }
+    // }
     return null;
   }
 
@@ -170,8 +170,6 @@ export class CustomValidatorComponent {
     else{
       c.get('employeeLoginPasswordConfirm')?.setErrors({ passwordMismatch: true });
     }
-    // const password = c.get('employeeLoginPassword')?.value;
-    // const confirmPass = c.get('employeeLoginPasswordConfirm')?.value;
     if(!loginPasswordConfirm){
       return {
         code : 'ER001',
@@ -197,20 +195,42 @@ export class CustomValidatorComponent {
       params : '「パスワード（確認」が不正です。[ER017]'
 
     };
+
+    
   }
 
-  //validators certificationDate
-  static certificateDateValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const startDate = control.get('certificationStartDate');
-      const endDate = control.get('certificationEndDate');
-      if (!startDate || !endDate) {
-        return null;
-      }
-      const start = new Date(startDate.value);
-      const end = new Date(endDate.value);
-      return start <= end ? null : { invalidCertificateDate: true };
-    };
+  static certificateDateValidator(group: AbstractControl): MessageComponent | null {
+    const startDate = group.get('certificationStartDate')?.value;
+    const endDate = group.get('certificationEndDate')?.value;
+    
+    
+
+    if (!startDate || !endDate) {
+      // If either start date or end date is null, no validation needed
+      return null;
+      
+    }
+    
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+
+    if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
+      // If either start date or end date is not a valid date, no validation needed
+      
+      return null;
+    }
+
+    if (endDateObj < startDateObj) {
+      console.log("abc");
+      return {
+        code : 'ER012',
+        params : '「「失効日」は「資格交付日」より未来の日で入力してください。[ER012]'
+  
+      };
+    }
+
+    return null;
   }
 
   // Validator
@@ -227,6 +247,17 @@ export class CustomValidatorComponent {
       return {
         code : 'ER18',
         params : '「画面上の項目名」は半角で入力してください。',
+      }
+    }
+    return null;
+  }
+
+  static ValidStartDate ( c : AbstractControl) : MessageComponent | null {
+    const startDate = c.value
+    if(!startDate){
+      return {
+        code : 'ER001',
+        params : '画面項目名」を入力してください [ER001]'
       }
     }
     return null;
