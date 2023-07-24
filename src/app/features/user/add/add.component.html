@@ -171,7 +171,7 @@
                                                 <input class="form-control" readonly="" bsDatepicker type="text" [bsConfig]="bsConfig" formControlName="certificationEndDate" />
                                                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                             </div>   
-                                            <div *ngIf="data?.errors">
+                                            <div *ngIf="data.get('certifications.certificationEndDate')?.errors && ( data.get('certifications.certificationEndDate')?.touched ||  data.get('certifications.certificationEndDate')?.dirty )">
                                                 <div class="invalid-feedback">
                                                     「失効日」は「資格交付日」より未来の日で入力してください。
                                                 </div>
@@ -185,16 +185,11 @@
                                         <label class="col-form-label col-sm-2"><i class="relative">点数:</i></label>
                                         <div class="col-sm col-sm-10">
                                             <input type="text" class="form-control" formControlName="" formControlName="employeeCertificationScore"> 
-                                            <!-- && data.get('certifications.employeeCertificationScore')?.touched                                           -->
-                                                <div *ngIf="data.get('certifications.employeeCertificationScore')?.errors">   
-                                                    <!-- <div *ngIf="data.hasError("ValidScore")"> -->
-                                                        <!-- <div class="invalid-feedback">
-                                                            {{data.errors?.['params']}}
-                                                            a
-                                                        </div> -->
-                                                    <!-- </div> -->
-                                                    <!-- {{data.hasError("ValidScore")}} -->
+                                            <div *ngIf="data.get('certifications.employeeCertificationScore')?.errors && ( data.get('certifications.employeeCertificationScore')?.touched ||  data.get('certifications.employeeCertificationScore')?.dirty )">
+                                                <div class="invalid-feedback">
+                                                    {{data.get('certifications.employeeCertificationScore')?.errors?.['params']}}
                                                 </div>
+                                            </div>
                                         </div>
                                     </li>
                                 </ng-container>

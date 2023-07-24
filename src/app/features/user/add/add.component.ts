@@ -54,7 +54,7 @@ export class AddComponent {
       certifications : this.fb.group({
         certificationId : [''],
         certificationStartDate : [''],
-        certificationEndDate : ['',[CustomValidatorComponent.certificateDateValidator()]],
+        certificationEndDate : [''],
         employeeCertificationScore : ['',]
       })
     },{
@@ -136,9 +136,4 @@ export class AddComponent {
     certification?.get('certificationEndDate')?.updateValueAndValidity();
     certification?.get('employeeCertificationScore')?.updateValueAndValidity();
   }
-
-
-
-
-
 }
