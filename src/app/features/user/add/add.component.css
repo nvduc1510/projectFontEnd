@@ -1,0 +1,27 @@
+.is-invalid {
+    border: 2px solid red; /* Add a red border when the input is invalid */
+    background-color: #ffebee; /* Add a light red background color for emphasis */
+    color: #b71c1c; /* Set the text color to a dark red */
+    position: relative; /* Set the position to relative to contain the icon */
+  }
+  
+  /* Icon style */
+  .is-invalid::after {
+    content: "\0021"; /* Unicode for the exclamation mark icon (U+0021) */
+    font-family: Arial, sans-serif; /* Use a font that includes the exclamation mark icon */
+    position: absolute; /* Set the position to absolute to overlay the icon */
+    right: 10px; /* Adjust the distance from the right side */
+    top: 50%; /* Position the icon vertically in the middle */
+    transform: translateY(-50%); /* Adjust vertical alignment */
+    font-size: 18px; /* Set the icon size */
+    color: #ff0000; /* Set the icon color to red (#ff0000) */
+  }
+  .invalid-feedbacks{
+    width: 100%;
+  font-size: 12px;
+  color: #e10020;
+  margin-left: 5px;
+  /* position: absolute; */
+  /* bottom: -18px; */
+  }
+  
