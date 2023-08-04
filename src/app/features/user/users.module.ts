@@ -7,15 +7,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AddComponent } from './add/add.component';
 import { ConfirmComponent } from './confirm/confirm.component';
-import { EditComponent } from './edit/edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DetailComponent } from './detail/detail.component';
 
 @NgModule({
   declarations: [
     UserListComponent,
     AddComponent,
     ConfirmComponent,
-    EditComponent,
+    DetailComponent
     
   ],
   imports: [

@@ -6,6 +6,7 @@ import { AuthorizeGuard } from '../../shared/auth/authorize.guard';
 import { AddComponent } from './add/add.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { MessageAddComponent } from '../message/message-add/message-add.component';
+import { DetailComponent } from './detail/detail.component';
 
 const routes: Routes = [
   { path: 'user', redirectTo: 'user/list', pathMatch: 'full'},
@@ -13,6 +14,8 @@ const routes: Routes = [
   { path: 'user/add', component: AddComponent, canActivate: [AuthorizeGuard] },
   { path: 'user/confirm', component: ConfirmComponent, canActivate: [AuthorizeGuard] },
   { path: 'messageAdd', component: MessageAddComponent, canActivate: [AuthorizeGuard] },
+  // { path: 'detail/:employeeId', component: DetailComponent, canActivate: [AuthorizeGuard] },
+  { path: 'detail/:employeeId', component: DetailComponent, canActivate: [AuthorizeGuard] },
   { path: '**', component: SystemErrorComponent },
 ];
 

@@ -1,4 +1,4 @@
-import { catchError, finalize, of, tap } from 'rxjs';
+import { catchError, finalize, map, of, tap } from 'rxjs';
 import { EmployeeService } from './../../../service/employee.service';
 import { Component } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
@@ -8,6 +8,8 @@ import { Department } from 'src/app/model/department';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Page } from 'src/app/model/page';
 import { DepartmentService } from 'src/app/service/department.service';
+import { Detail } from 'src/app/model/detail';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
@@ -33,11 +35,14 @@ export class UserListComponent {
   errorMessage : string | null = null;
 
   searchForm !: FormGroup;
+
   constructor(
     public http: HttpClient,
     private employeeService :EmployeeService,
     private departmentService : DepartmentService,
+    private route : Router,
     private fb : FormBuilder
+    
   ) { }
 
   ngOnInit(): void {
@@ -104,6 +109,7 @@ export class UserListComponent {
     this.departmentId = this.searchForm.controls['departmentId'].value;
     this.getListEmployee();
   }
+  
   getListDepartment() {
     this.departmentService.getListDepartment().subscribe(params => {
       this.listDepartment = params;
@@ -142,28 +148,12 @@ export class UserListComponent {
   resetPage() {
     this.offset = 1;
   }
+
   goToPage(page: number) {
-    this.employeeName = this.searchForm.controls['employeeName'].value;
-    this.departmentId = this.searchForm.controls['departmentId'].value;
-    console.log(this.employeeName)
-    if (page !== 1 && (this.employeeName || this.departmentId)) {
-      this.offset = 1; // Đặt trang về trang đầu
-    } else {
-      this.offset = page;
-    }
-    this.offset = page - 1;
+    this.offset = (page - 1) * this.limit;
     this.offset = page;
-    this.employeeService.getListEmployees(
-      this.employeeName,
-      this.departmentId,
-      this.ordEmployeeName,
-      this.ordCertificationName,
-      this.ordEndDate,
-      this.offset,
-      this.limit
-    ).subscribe(data => {
-      this.listEmployee = data.employees;
-    })
+    this.getListEmployee();
   }
-  }
+
+}
 

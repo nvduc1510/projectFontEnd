@@ -5,8 +5,14 @@
 			<div class="content">
 				<div class="content-main">
 					<div class="notification-box">
-						<h1 class="title">ユーザの登録が完了しました。 or ユーザの更新が完了しました。 or ユーザの削除が完了しました。</h1>
-						<button type="button" class="btn btn-primary btn-sm" routerLink="/user/list">OK</button>
+						<!-- <li class="box-err" *ngIf="errorMessage"> -->
+							<!-- <h1 class="box-err-content">{{ errorMessage }}</h1> -->
+						<!-- </li> -->
+						<div *ngIf="message">
+							<h1 class="title">{{ message }}</h1>
+						</div>
+						
+						<button type="button" class="btn btn-primary btn-sm" (click)="navigateToList()">OK</button>
 					</div>
 				</div>
 			</div>

@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
 export class MessageComponent {
   code!: string;
   params!: string[] | string;
-  constructor(){}
+
 }

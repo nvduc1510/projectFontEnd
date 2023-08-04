@@ -9,8 +9,8 @@
 						<form class="c-form box-shadow was-validated" [formGroup]="data" (ngSubmit)="submit()">
 							<ul>
 								<li class="title">会員情報編集</li>
-								<li class="box-err">
-									<div class="box-err-content">Hiển thị lỗi chung lại đây</div>
+								<li class="box-err" *ngIf="errorMessage">
+									<div class="box-err-content">{{ errorMessage }}</div>
 								</li>
                                 <!-- Textbox EmployeeLoginId----------------------------------------->
                                 
@@ -18,7 +18,7 @@
                                     <label class="col-form-label col-sm-2"><i class="relative">カタカナ氏名:<span class="note-red">*</span></i></label>
                                     <div class="col-sm col-sm-10">
                                         <input type="text" class="form-control" formControlName="employeeLoginId" [ngClass]="{'is-invalid' : submitted && data.controls['employeeLoginId'].errors} ">
-                                        <div *ngIf="f['employeeLoginId'].errors && ( f['employeeLoginId'].touched ||  f['employeeLoginId'].dirty )">
+                                        <div *ngIf="((data.get('employeeLoginId')?.errors) && ( data.get('employeeLoginId')?.touched || data.get('employeeLoginId')?.dirty ))|| isSubmit ">
                                             <div class="invalid-feedback " >
                                                 {{data.controls['employeeLoginId'].errors?.['params']}}
                                             </div>
@@ -35,20 +35,19 @@
                                             <option value="">選択してください</option>
 											<option *ngFor="let de of listDepartment" [value]="de.departmentId">{{de.departmentName}}</option>
 										</select>
-                                        <div *ngIf="f['departmentId'].errors && ( f['departmentId'].touched ||  f['departmentId'].dirty )">
+                                        <div *ngIf="(data.get('departmentId')?.errors && ( data.get('departmentId')?.touched || data.get('departmentId')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['departmentId'].errors?.['params']}}
                                             </div>
                                         </div>
 									</div>
-
 								</li>
                                 <!-- Textbox employeeName------------------------------------------------>
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
                                         <input type="text" class="form-control" formControlName="employeeName">
-                                        <div *ngIf="f['employeeName'].errors && ( f['employeeName'].touched ||  f['employeeName'].dirty )">
+                                        <div *ngIf=" (data.get('employeeName')?.errors && (data.get('employeeName')?.touched ||  data.get('employeeName')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeName'].errors?.['params']}}
                                             </div>
@@ -60,7 +59,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">カタカナ氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                       
 										<input type="text" class="form-control" formControlName="employeeNameKana">
-                                        <div *ngIf="f['employeeNameKana'].errors && ( f['employeeNameKana'].touched ||  f['employeeNameKana'].dirty )">
+                                        <div *ngIf="(data.get('employeeNameKana')?.errors && ( data.get('employeeNameKana')?.touched ||  data.get('employeeNameKana')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeNameKana'].errors?.['params']}}
                                             </div>
@@ -75,7 +74,7 @@
 											<input class="form-control"  #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" formControlName="employeeBirthDate" [bsConfig]="bsConfig" >
 											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar" ></i></span>
 										</div>
-                                        <div *ngIf="f['employeeBirthDate'].errors && ( f['employeeBirthDate'].touched ||  f['employeeBirthDate'].dirty )">
+                                        <div *ngIf=" (data.get('employeeBirthDate')?.errors && ( data.get('employeeBirthDate')?.touched ||  data.get('employeeBirthDate')?.dirty )) || isSubmit">
                                             <div class="invalid-feedbacks">
                                                 {{data.controls['employeeBirthDate'].errors?.['params']}}
                                             </div>
@@ -87,7 +86,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">メールアドレス:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                     
                                         <input type="text" class="form-control" formControlName="employeeEmail">
-                                        <div *ngIf="f['employeeEmail'].errors && ( f['employeeEmail'].touched ||  f['employeeEmail'].dirty )">
+                                        <div *ngIf="(data.get('employeeEmail')?.errors && ( data.get('employeeEmail')?.touched ||  data.get('employeeEmail')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeEmail'].errors?.['params']}}
                                             </div>
@@ -99,7 +98,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">電話番号:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
                                         <input type="text" class="form-control" formControlName="employeeTelephone">
-                                        <div *ngIf="f['employeeTelephone'].errors && ( f['employeeTelephone'].touched ||  f['employeeTelephone'].dirty )">
+                                        <div *ngIf="(data.get('employeeTelephone')?.errors && ( data.get('employeeTelephone')?.touched || data.get('employeeTelephone')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeTelephone'].errors?.['params']}}
                                             </div>
@@ -110,8 +109,8 @@
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10"> 
-                                        <input type="text" class="form-control" formControlName="employeeLoginPassword">
-                                        <div *ngIf="f['employeeLoginPassword'].errors && ( f['employeeLoginPassword'].touched ||  f['employeeLoginPassword'].dirty )">
+                                        <input type="password" class="form-control" formControlName="employeeLoginPassword">
+                                        <div *ngIf="(data.get('employeeLoginPassword')?.errors && ( data.get('employeeLoginPassword')?.touched ||  data.get('employeeLoginPassword')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeLoginPassword'].errors?.['params']}}
                                             </div>
@@ -122,13 +121,12 @@
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード（確認）:</i></label>
 									<div class="col-sm col-sm-10">      
-                                        <input type="text" class="form-control" formControlName="employeeLoginPasswordConfirm">
-                                        <div *ngIf="data?.errors && ( f['employeeLoginPasswordConfirm'].touched ||  f['employeeLoginPasswordConfirm'].dirty )">
+                                        <input type="password" class="form-control" formControlName="employeeLoginPasswordConfirm">
+                                        <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched ||  data.get('employeeLoginPasswordConfirm')?.dirty )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.errors?.['params']}}
                                             </div>
                                         </div>
-
                                     </div>
 								</li>
 								<li class="title mt-12"><a href="#!">日本語能力</a></li>
@@ -214,7 +212,7 @@
         <li class="form-group row d-flex">
             <label class="col-form-label col-sm-2">資格交付日:</label>
             <div class="col-sm col-sm-10 d-flex">
-                <div class="input-group date datepicker" data-date-format="dd-mm-yyyy">
+                <div class="input-group date datepicker format" data-date-format="dd-mm-yyyy">
                 <input class="form-control" readonly type="text" placeholder="yyyy/MM/dd" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
             </div>
@@ -223,16 +221,16 @@
         <li class="form-group row d-flex">
             <label class="col-form-label col-sm-2">失効日:</label>
             <div class="col-sm col-sm-10 d-flex">
-            <div class="input-group date datepicker" data-date-format="dd-mm-yyyy">
+            <div class="input-group date datepicker format" data-date-format="dd-mm-yyyy">
                 <input class="form-control" readonly type="text" placeholder="yyyy/MM/dd" />
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
             </div>
         </div>
         </li>
-        <li class="form-group row d-flex">
+        <li class="form-group row d-flex ">
             <label class="col-form-label col-sm-2">点数:</label>
-            <div class="col-sm col-sm-10">
-            <input type="text" class="form-control" placeholder="点数" readonly />
+            <div class="col-sm col-sm-10 " >
+            <input type="text" class="form-control format" placeholder="点数" readonly />
         </div>
         </li>
     </ng-template>

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Page } from '../model/page';
+import { Detail } from '../model/detail';
 const EMPLOYEE_API = 'http://localhost:8085/employees';
 const httpOptions = { headers: new HttpHeaders({ 'Content-Type ': 'application/json' }) }
 
@@ -48,5 +49,25 @@ export class EmployeeService {
     
     return this.http.post<any>(EMPLOYEE_API,employee);
   }
+
+    /**
+   * Gửi một yêu cầu HTTP GET đến một API để lấy thông tin nhân viên dựa trên ID.
+   * @param employeeId ID của nhân viên cần lấy thông tin (kiểu dữ liệu: number).
+   * @returns  trả về một đối tượng Observable<Detail>.
+   */
+    getEmployeeById(employeeId: number): Observable<Detail> {
+      const url = `${EMPLOYEE_API}/${employeeId}`;
+      return this.http.get<Detail>(url);
+    }
+
+    /**
+     * Xóa nhân viên có ID nhân viên được chỉ định.
+     * @param employeeId ID của nhân viên cần xóa.
+     * @returns employeeId - ID của nhân viên cần xóa.
+     */
+    deleteEmployee(employeeId : number) :Observable<any> {
+      const url = `${EMPLOYEE_API}/${employeeId}`;
+      return this.http.delete<any>(url);
+    }
   
 }

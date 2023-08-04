@@ -1,0 +1,102 @@
+<body>
+	<main>
+		<div class="container">
+			<app-header></app-header>
+			<div class="content">
+				<div class="content-main ">
+					<div class="row">
+						<form class="c-form box-shadow">
+							<ul class="show-data">
+								<li class="box-err" *ngIf="errorMes">
+									<div class="box-err-content">{{ errorMes }}</div>
+								</li>
+								<li class="title">会員詳細</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">アカウント名</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeName}}</div>
+								</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">グループ</label>
+									<div class="col-sm col-sm-10">{{employee?.departmentName}}</div>
+								</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">氏名</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeName}}</div>
+								</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">カタカナ氏名</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeNameKana}}</div>
+								</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">生年月日</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeBirthDate}}</div>
+								</li>
+								<li class="form-group row d-flex">
+									<label class="col-form-label col-sm-2">メールアドレス</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeEmail}}</div>
+								</li>
+								<li class="form-group row d-flex  bor-none">
+									<label class="col-form-label col-sm-2">電話番号</label>
+									<div class="col-sm col-sm-10">{{employee?.employeeTelephone}}</div>
+								</li>
+								<li class="title mt-12"><a href="#!">日本語能力</a></li>
+								<div *ngIf="certification && certification.length > 0">
+									<div *ngFor="let c of certification">
+                                        <li class="form-group row d-flex">
+                                            <label class="col-form-label col-sm-2">資格</label>
+                                            <div class="col-sm col-sm-10">{{c?.certificationName}}</div>
+                                        </li>
+                                        <li class="form-group row d-flex">
+                                            <label class="col-form-label col-sm-2">資格交付日</label>
+                                            <div class="col-sm col-sm-10">{{c?.startDate}}</div>
+                                        </li>
+                                        <li class="form-group row d-flex">
+                                            <label class="col-form-label col-sm-2">失効日</label>
+                                            <div class="col-sm col-sm-10">{{c?.endDate}}</div>
+                                        </li>
+                                        <li class="form-group row d-flex">
+                                            <label class="col-form-label col-sm-2">点数</label>
+                                            <div class="col-sm col-sm-10">{{c?.score}}</div>
+                                        </li>
+                                    </div>   
+								</div>   
+								<!-- Thực thi khi certification = null---------------------------------------->
+								<div *ngIf="!certification || certification.length === 0">
+									<li class="form-group row d-flex">
+										<label class="col-form-label col-sm-2">資格</label>
+										<div class="col-sm col-sm-10"></div>
+									</li>
+									<li class="form-group row d-flex">
+										<label class="col-form-label col-sm-2">資格交付日</label>
+										<div class="col-sm col-sm-10"></div>
+									</li>
+									<li class="form-group row d-flex">
+										<label class="col-form-label col-sm-2">失効日</label>
+										<div class="col-sm col-sm-10"></div>
+									</li>
+									<li class="form-group row d-flex">
+										<label class="col-form-label col-sm-2">点数</label>
+										<div class="col-sm col-sm-10"></div>
+									</li>
+								</div>								                          							
+								<li  class="form-group row d-flex">
+									<div class="btn-group col-sm col-sm-10 ml">
+										<button type="button" class="btn btn-primary btn-sm" >編集</button>
+										<button type="button" class="btn btn-secondary btn-sm" (click)="click()">削除</button>
+										<button type="button" class="btn btn-secondary btn-sm" routerLink="/user/list">戻る</button>
+									</div>
+								</li>
+							</ul>
+						</form>
+					</div>
+				</div>
+				<div class="confirmationForm" *ngIf="isForm">
+					<h2>削除しますが、よろしいでしょうか。</h2>
+					<button class="confirmDelete" (click)="deleteEmployee()">OK</button>
+					<button class="cancelDelete" (click)="cancelForm()">Cancel</button>
+				</div>
+			</div>
+			<app-footer></app-footer>
+		</div>
+	</main>
+</body>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Department } from 'src/app/model/department';
 import { CertificationService } from 'src/app/service/certification.service';
@@ -14,21 +14,27 @@ import { CustomValidatorComponent } from './../../valid/custom-validator/custom-
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css']
 })
-export class AddComponent {
+export class AddComponent  implements OnInit{
   listDepartment : Department[] = [];
   listCertification !: any  [];
   data !: FormGroup;
   isErrorMessage = false;
   hadCertification: boolean = false;
+  isSubmit = false;
 
   public bsConfig: Partial <BsDatepickerConfig>;
   bsValue = new Date();
 
   submitted = false;
+  hasError = false;
+
+  employeeFormValue: any;
+  errorMessage!: string;
 
   constructor(
     private http : HttpClient,
     private route : Router,
+    private router : ActivatedRoute,
     private fb: FormBuilder,
     private departmentService: DepartmentService,
     private certificationService: CertificationService,
@@ -39,7 +45,9 @@ export class AddComponent {
   }
 
   ngOnInit() {
+    this.errorMessage = history.state.errorMessage;
     this.data = this.fb.group ({
+      employeeId:[''],
       employeeLoginId : ['', [CustomValidatorComponent.ValidEmployeeLoginId]],
       departmentId : ['', [CustomValidatorComponent.ValidDepartment]],
       employeeName : ['', [CustomValidatorComponent.ValidEmployeeName]],
@@ -51,16 +59,15 @@ export class AddComponent {
       employeeLoginPasswordConfirm : ['', [CustomValidatorComponent.ValidLoginPasswordConfirm]],
       certifications : this.fb.group({
         certificationId : [''],
-        certificationStartDate : ['',],
-        certificationEndDate : ['', ],
-        employeeCertificationScore : ['',]
+        certificationStartDate : [''],
+        certificationEndDate : [''],
+        employeeCertificationScore : ['']
       },
       {
         validators: CustomValidatorComponent.certificateDateValidator,
       })
     },{
       validator : CustomValidatorComponent.ConfirmPassword,
-      
     })
     
     this.getListCertification();
@@ -72,12 +79,8 @@ export class AddComponent {
     if(certificationId){
       this.hadCertification = true;
     }
-    // Gán dữ liệu vào form
-    this.data.patchValue(saveData); 
-    console.log("save: ", saveData);
-    console.log(' this.hadCertification: ',  this.hadCertification);
-    
-    
+    // thực hiện gán dữ liệu vào form
+    this.data.patchValue(saveData);  
   }
 
   /**
@@ -102,30 +105,34 @@ export class AddComponent {
    * Thực hiện biding dữ liệu sang màn confirm
    */
   submit() {
-    const departmentId = this.data.value.departmentId;
-    const department = this.listDepartment.find(d => d.departmentId == departmentId);
-    const certificationId = this.data.value.certifications.certificationId;
-    const certification = this.listCertification.find(c => c.certificationId == certificationId);
-    let getData = {employeeForm : this.data.value, department: department, certification : certification}
-    const data = JSON.stringify(getData)
-    const navigationExtras : NavigationExtras = {
-      queryParams: {
-        data :data
+    if(this.data.valid){
+      this.isSubmit = false;
+      const departmentId = this.data.value.departmentId;
+      const department = this.listDepartment.find(d => d.departmentId == departmentId);
+      const certificationId = this.data.value.certifications.certificationId;
+      const certification = this.listCertification.find(c => c.certificationId == certificationId);
+      let getData = {employeeForm : this.data.value, department: department, certification : certification}
+      const data = JSON.stringify(getData)
+      const navigationExtras : NavigationExtras = {
+        queryParams: {
+          data :data
+        }
       }
+      this.route.navigate(['/user/confirm'], navigationExtras);
     }
-    this.route.navigate(['/user/confirm'], navigationExtras);
-  }
+    else {
+      this.isSubmit = true;
+    }
+}
 
-  get f() {
-    return this.data.controls;
-  }
-
+  /**
+   * Xử lý Certifications 
+   */
   onCertificationChange() {
     const certificationId = this.data.value?.certifications?.certificationId;
     const certification = this.data.get('certifications');
     if(certificationId){
       this.hadCertification = true;
-
       certification?.get('certificationStartDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
       certification?.get('certificationEndDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
       certification?.get('employeeCertificationScore')?.setValidators(CustomValidatorComponent.ValidScore);
@@ -144,5 +151,4 @@ export class AddComponent {
     certification?.get('certificationEndDate')?.updateValueAndValidity();
     certification?.get('employeeCertificationScore')?.updateValueAndValidity();
   }
-  
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MessageComponent } from '../message/message.component';
 
 @Component({
@@ -9,12 +9,12 @@ import { MessageComponent } from '../message/message.component';
 })
 export class CustomValidatorComponent {
 
+  //check valid employeeLoginId
   static ValidEmployeeLoginId( c : AbstractControl) : MessageComponent | null {
     const loginFormat =/^[a-zA-Z_][a-zA-Z0-9_]*$/;
-    // const eHalfSize = /^[ -~]+$/;
     const loginId = c.value
     const d = ( c.touched ||c.dirty)
-    if(!loginId) {
+    if(loginId == 0) {
       return {
         code : 'ER001',
         params : '画面項目名」を入力してください [ER001]'
@@ -33,6 +33,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //check DepartmentName
   static ValidDepartment ( c : AbstractControl) : MessageComponent | null {
     const departmentId  = c.value
     if(!departmentId) {
@@ -44,6 +45,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //check valid employeeName
   static ValidEmployeeName ( c : AbstractControl) : MessageComponent | null {
     const employeeName  = c.value
     if(!employeeName) {
@@ -62,6 +64,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //check employeeNameKana
   static ValidEmployeeNameKana (c : AbstractControl) : MessageComponent | null {
     const employeeNameKana = c.value
     const kanaHalfSize = /^[\u30A0-\u30FFー]+$/;
@@ -85,24 +88,20 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //check valid employeeBirthDate
   static ValidEmployeeBirthDate ( c : AbstractControl) : MessageComponent | null {
     const birthDate = c.value
-    // const formDate = /^\d{4}\/\d{2}\/\d{2}$/
+    const formDate = /^\d{4}\/\d{2}\/\d{2}$/
     if(!birthDate){
       return {
         code : 'ER001',
         params : '画面項目名」を入力してください [ER001]'
       }
     }
-    // if(!formDate.test(birthDate)){
-    //   return { 
-    //     code: 'ER011',
-    //     params: '「画面項目名」は無効になっています。[ER011]'
-    //   }
-    // }
     return null;
   }
 
+  //check valid employeeTelephone
   static ValidEmployeeTelePhone(c: AbstractControl) : MessageComponent | null {
     const employeeTelePhone = c.value
     const formTelePhone = /^[0-9]*$/;
@@ -115,12 +114,19 @@ export class CustomValidatorComponent {
     if(employeeTelePhone.length > 50){
       return {
         code : 'ER006',
-        params : 'xxxx桁以内の「画面項目名」を入力してください'          
+        params : 'xxxx桁以内の「画面項目名」を入力してください [ER006]'          
+      }
+    }
+    if(!formTelePhone.test(employeeTelePhone)) {
+      return {
+        code : 'ER008',
+        params : '画面項目名」に半角英数を入力してください [ER008]'
       }
     }
     return null;
   }
 
+  //check valid employeeEmial
   static ValidEmployeeEmail( c : AbstractControl) : MessageComponent | null {
     const employeeEmail = c.value
     const formEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -145,6 +151,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //check valid employeeLoginPassword
   static ValidLoginPassword(c : AbstractControl) : MessageComponent | null {
     const loginPassword = c.value
     if (!loginPassword) {
@@ -153,7 +160,7 @@ export class CustomValidatorComponent {
         params : '画面項目名」を入力してください [ER001]'
       }
     }
-    if(loginPassword.length <=8 || loginPassword.length >= 50){
+    if(loginPassword.length <8 || loginPassword.length > 50){
       return {
         code : 'ER007',
         params : '「画面項目名」を8＝桁数、＜＝50桁で入力してください [ER007]'
@@ -162,6 +169,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //Check valid employeeLoginPasswordConfirm
   static ValidLoginPasswordConfirm(c : AbstractControl) : MessageComponent | null {
     const loginPasswordConfirm = c.value
     if(loginPasswordConfirm.employeeLoginPassword === loginPasswordConfirm.employeeLoginPasswordConfirm){
@@ -176,15 +184,16 @@ export class CustomValidatorComponent {
         params : '画面項目名」を入力してください [ER001]'
       }
     }
-    if(loginPasswordConfirm.length <= 8 || loginPasswordConfirm.length >= 50){
+    if(loginPasswordConfirm.length < 8 || loginPasswordConfirm.length > 50){
       return {
         code : 'ER007',
-        params : '「画面項目名」を8＜＝桁数、＜＝50桁で入力してください [ER007]'
+        params : '「画面項目名」を8＜＝ 8、＜＝50桁で入力してください [ER007]'
       }
     }
     return null; 
   }
 
+  // check valid employeeLoginPasswordConfirm trùng với employeeLoginPassword
   static ConfirmPassword( f : FormGroup) : MessageComponent | null {
     const v = f.value
     const passwordError = f.controls['employeeLoginPassword'].errors
@@ -193,47 +202,34 @@ export class CustomValidatorComponent {
     : {
       code : 'ER017',
       params : '「パスワード（確認」が不正です。[ER017]'
-
     };
-
-    
   }
 
+  //check certificationStartDate > certificationEndDate
   static certificateDateValidator(group: AbstractControl): MessageComponent | null {
     const startDate = group.get('certificationStartDate')?.value;
     const endDate = group.get('certificationEndDate')?.value;
-    
-    
-
     if (!startDate || !endDate) {
-      // If either start date or end date is null, no validation needed
+      // Nếu ngày bắt đầu hoặc ngày kết thúc là null, không cần xác thực
       return null;
-      
-    }
-    
-
+    }  
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
-
     if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-      // If either start date or end date is not a valid date, no validation needed
-      
+      // Nếu ngày bắt đầu hoặc ngày kết thúc không phải là ngày hợp lệ, không cần xác thực
       return null;
     }
-
     if (endDateObj < startDateObj) {
       console.log("abc");
       return {
         code : 'ER012',
         params : '「「失効日」は「資格交付日」より未来の日で入力してください。[ER012]'
-  
       };
     }
-
     return null;
   }
 
-  // Validator
+  // Check valid employeeCertificationSCore
   static ValidScore(c : AbstractControl) : MessageComponent | null {
     const score = c.value
     const formScore  =/^[0-9]*$/
@@ -252,6 +248,7 @@ export class CustomValidatorComponent {
     return null;
   }
 
+  //Check valid certificationDate
   static ValidStartDate ( c : AbstractControl) : MessageComponent | null {
     const startDate = c.value
     if(!startDate){

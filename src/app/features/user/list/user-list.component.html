@@ -5,7 +5,7 @@
       <div class="content-main">
         <div class="search-memb">
           <h1 class="title">会員名称で会員を検索します。検索条件無しの場合は全て表示されます。</h1>
-          <form [formGroup]="searchForm" (ngSubmit)="search(); resetPage()" class="c-form">
+          <form [formGroup]="searchForm" (ngSubmit)="search();" class="c-form">
             <ul class="d-flex">
               <!-- text box để nhập tìm kiếm ------------------------------------------------------------------------>
               <li class="form-group row">
@@ -30,6 +30,7 @@
                 <div class="btn-group">
                   <button type="submit" class="btn btn-primary btn-sm">検索</button>
                   <button type="button" class="btn btn-secondary btn-sm"  routerLink="/user/add">新規追加</button>
+                 
                 </div>
               </li>
             </ul>
@@ -66,9 +67,8 @@
 
             <!-- thực hiện hiển thị employee---------------------------------------------------->
             <div class="css-grid-table-body" *ngFor="let e of listEmployee">
-              <div class="bor-l-none">
-                <a routerLink="/user/detail">1</a>
-              </div>
+              <div class="" [routerLink]="['/detail', e.employeeId]">{{e.employeeId}}</div>
+              <!-- <div (click)="onEmployeeClicked(e.employeeId)">{{e.employeeId}}</div> -->
               <div class="text-wrap">{{e.employeeName}}</div>
               <div class="text-wrap">{{e.employeeBirthDate | date :'yyyy/MM/dd'}}</div>
               <div class="text-wrap">{{e.departmentName}}</div>
@@ -89,7 +89,7 @@
               </button>
               <a class="btn btn-sm text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset > 1" (click)="goToPage(1)">1</a>
               <a class="btn btn-sm text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset > 4">...</a>
-              <a class="btn btn-sm text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset > 3" (click)="goToPage(offset - 1)">{{offset-1}}</a>
+              <a class="btn btn-sm text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset > 2" (click)="goToPage(offset - 1)">{{offset-1}}</a>
               <a class="btn btn-sm btn-out-line-success text-primary btn-falcon-default" style="cursor: pointer; border-color: #38ac23" *ngIf="offset <= totalPages">{{ offset }}</a>
               <a class="btn btn-sm btn-out-line-success text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset + 1 < totalPages" (click)="goToPage(offset + 1)">{{ offset + 1 }}</a>
               <a class="btn btn-sm text-primary btn-falcon-default" style="cursor: pointer" *ngIf="offset + 2 < totalPages">...</a>
@@ -108,3 +108,4 @@
     <app-footer></app-footer>
   </div>
 </main>
+

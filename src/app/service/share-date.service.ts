@@ -5,6 +5,8 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ShareDateService {
+  errorMessage!: string;
+  employeeFormValue: any;
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();
 
@@ -24,5 +26,5 @@ export class ShareDateService {
     return this.dataSubject.getValue();
   }
 
-        constructor() { }
+  constructor() { }
 }

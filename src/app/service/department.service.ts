@@ -10,7 +10,9 @@ const httpOptions = {headers : new HttpHeaders ({ 'Content-Type' : 'application/
 export class DepartmentService {
 
   constructor(private http : HttpClient) { }
-
+  /**
+   * Gửi yêu cầu HTTPGet lấy API  trả về một Observable
+   */
   getListDepartment() : Observable<any>{
     return this.http.get<any>(DEPARTMENT_API, httpOptions);
   }

@@ -1,10 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { AddEmployeeDTO } from 'src/app/model/addEmployeeDTO';
-import { Certification } from 'src/app/model/certification';
-import { EmployeeCertification } from 'src/app/model/employeeCertification';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { ShareDateService } from 'src/app/service/share-date.service';
 
@@ -37,7 +34,6 @@ export class ConfirmComponent {
     }
     return '';
   }
-
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.data =JSON.parse(params['data']);
@@ -45,8 +41,6 @@ export class ConfirmComponent {
       this.employeeForm = this.data?.employeeForm;
       this.employeeCertification = this.data?.employeeForm.certifications;
       this.certification = this.data?.certification;
-      console.log("abc: ", this.certification);
-      
     })
   }
 
@@ -55,12 +49,12 @@ export class ConfirmComponent {
    */
   cancel(){
     //Set dữ liệu vào setData trong ShareData
-    const a=  this.shareData.setData(this.employeeForm);
+    this.shareData.setData(this.employeeForm);
     // Điều hướng về màn add
     this.route.navigate(['/user/add']);
-    console.log("shareData:", a);
   }
 
+  // Xử lý dữ liệu từ form
   onSubmit() {
     const employeeData : AddEmployeeDTO = {
       departmentId: this.employeeForm.departmentId,
@@ -80,18 +74,19 @@ export class ConfirmComponent {
       certification.certificationStartDate = this.formatDate(certification.certificationStartDate);
       employeeData.certifications.push(certification);
     }
-      this.employeeService.createEmployee(employeeData).subscribe({
-        next: res => {
-          console.log("success!");
-          this.route.navigate(['messageAdd']);
-        },
-        error: err => {
-          console.log("error:", err);
+    this.employeeService.createEmployee(employeeData).subscribe({
+      next: res => {
+        console.log("success!");
+        const message = "ユーザの登録が完了しました。";
+        this.route.navigate(['messageAdd'], { state: { messageInf: message } }); 
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 500) {
+          const message = '「アカウント名」は既に存在しています。'
+          const employeeFormValue = this.shareData.setData(this.employeeForm);
+          this.route.navigate(['/user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message } });   
         }
-      });
-      console.log("form data: ", employeeData);
-
-      console.log("Kết quả : ", employeeData);
-      
+      }
+    });
   }
 }
