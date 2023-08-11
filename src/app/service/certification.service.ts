@@ -14,6 +14,6 @@ export class CertificationService {
    * Gửi yêu cầu HTTPGet lấy API  trả về một Observable
    */
     getAllCertification() {
-      return this.http.get<any>(CERTIFICATION_API+"/", httpOptions);
+      return this.http.get<any>(CERTIFICATION_API+"/");
       }
 }

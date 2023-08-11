@@ -1,5 +1,5 @@
 import { AddEmployeeDTO } from './../model/addEmployeeDTO';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Page } from '../model/page';
@@ -68,6 +68,11 @@ export class EmployeeService {
     deleteEmployee(employeeId : number) :Observable<any> {
       const url = `${EMPLOYEE_API}/${employeeId}`;
       return this.http.delete<any>(url);
+    }
+    // updateEmpoyee(employee)
+    updateEmployee(employeeId: number, employeeDTO: AddEmployeeDTO): Observable<any> {
+      const url = `${EMPLOYEE_API}/${employeeId}`;
+      return this.http.put<AddEmployeeDTO>(url, employeeDTO);
     }
   
 }

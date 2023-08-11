@@ -14,8 +14,8 @@ const routes: Routes = [
   { path: 'user/add', component: AddComponent, canActivate: [AuthorizeGuard] },
   { path: 'user/confirm', component: ConfirmComponent, canActivate: [AuthorizeGuard] },
   { path: 'messageAdd', component: MessageAddComponent, canActivate: [AuthorizeGuard] },
+  { path: 'detail', component: DetailComponent, canActivate: [AuthorizeGuard] },
   // { path: 'detail/:employeeId', component: DetailComponent, canActivate: [AuthorizeGuard] },
-  { path: 'detail/:employeeId', component: DetailComponent, canActivate: [AuthorizeGuard] },
   { path: '**', component: SystemErrorComponent },
 ];
 

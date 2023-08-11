@@ -178,18 +178,18 @@ export class CustomValidatorComponent {
     else{
       c.get('employeeLoginPasswordConfirm')?.setErrors({ passwordMismatch: true });
     }
-    if(!loginPasswordConfirm){
-      return {
-        code : 'ER001',
-        params : '画面項目名」を入力してください [ER001]'
-      }
-    }
-    if(loginPasswordConfirm.length < 8 || loginPasswordConfirm.length > 50){
-      return {
-        code : 'ER007',
-        params : '「画面項目名」を8＜＝ 8、＜＝50桁で入力してください [ER007]'
-      }
-    }
+    // if(!loginPasswordConfirm){
+    //   return {
+    //     code : 'ER001',
+    //     params : '画面項目名」を入力してください [ER001]'
+    //   }
+    // }
+    // if(loginPasswordConfirm.length < 8 || loginPasswordConfirm.length > 50){
+    //   return {
+    //     code : 'ER007',
+    //     params : '「画面項目名」を8＜＝ 8、＜＝50桁で入力してください [ER007]'
+    //   }
+    // }
     return null; 
   }
 
@@ -255,6 +255,24 @@ export class CustomValidatorComponent {
       return {
         code : 'ER001',
         params : '画面項目名」を入力してください [ER001]'
+      }
+    }
+    return null;
+  }
+
+  static ValidaScore(c : AbstractControl) : MessageComponent | null {
+    const score = c.value;
+    const number = /^[0-9]*$/;
+    if(!score){
+      return {
+        code : 'ER001',
+        params : '画面項目名」を入力してください [ER001]'
+      }
+    }
+    if(!number.test(score)) {
+      return {
+        code : 'ER008',
+        params : '画面項目名」に半角英数を入力してください [ER008]'
       }
     }
     return null;

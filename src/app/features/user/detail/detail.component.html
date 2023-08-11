@@ -29,7 +29,7 @@
 								</li>
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2">生年月日</label>
-									<div class="col-sm col-sm-10">{{employee?.employeeBirthDate}}</div>
+									<div class="col-sm col-sm-10">{{employee?.employeeBirthDate| date:'yyyy/MM/dd' }}</div>
 								</li>
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2">メールアドレス</label>
@@ -48,15 +48,15 @@
                                         </li>
                                         <li class="form-group row d-flex">
                                             <label class="col-form-label col-sm-2">資格交付日</label>
-                                            <div class="col-sm col-sm-10">{{c?.startDate}}</div>
+                                            <div class="col-sm col-sm-10">{{c?.certificationStartDate | date:'yyyy/MM/dd'}}</div>
                                         </li>
                                         <li class="form-group row d-flex">
                                             <label class="col-form-label col-sm-2">失効日</label>
-                                            <div class="col-sm col-sm-10">{{c?.endDate}}</div>
+                                            <div class="col-sm col-sm-10">{{c?.certificationEndDate | date:'yyyy/MM/dd'}}</div>
                                         </li>
                                         <li class="form-group row d-flex">
                                             <label class="col-form-label col-sm-2">点数</label>
-                                            <div class="col-sm col-sm-10">{{c?.score}}</div>
+                                            <div class="col-sm col-sm-10">{{c?.employeeCertificationScore}}</div>
                                         </li>
                                     </div>   
 								</div>   
@@ -81,9 +81,9 @@
 								</div>								                          							
 								<li  class="form-group row d-flex">
 									<div class="btn-group col-sm col-sm-10 ml">
-										<button type="button" class="btn btn-primary btn-sm" >編集</button>
+										<button type="button" class="btn btn-primary btn-sm" (click)="directionData(employeeId)">編集</button>
 										<button type="button" class="btn btn-secondary btn-sm" (click)="click()">削除</button>
-										<button type="button" class="btn btn-secondary btn-sm" routerLink="/user/list">戻る</button>
+										<button type="button" class="btn btn-secondary btn-sm"  routerLink="/user/list">戻る</button>
 									</div>
 								</li>
 							</ul>

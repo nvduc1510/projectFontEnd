@@ -10,6 +10,6 @@ export interface ListEmployee {
     employeeTelephone: string;
     certificationName: string;
     endDate: Date;
-    score: number;
+    score: number;  
     
 }

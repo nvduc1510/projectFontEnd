@@ -14,7 +14,6 @@
                   <input id="input-field" type="text" formControlName="employeeName" oninput="this.value = this.value.substring(0, 125);" [maxlength]="125"/>
                 </div>
               </li>
-
               <!-- dropdown department---------------------------------------------------------------------------------->
               <li class="form-group row">
                 <label class="col-form-label">グループ:</label>
@@ -30,7 +29,6 @@
                 <div class="btn-group">
                   <button type="submit" class="btn btn-primary btn-sm">検索</button>
                   <button type="button" class="btn btn-secondary btn-sm"  routerLink="/user/add">新規追加</button>
-                 
                 </div>
               </li>
             </ul>
@@ -54,7 +52,6 @@
               <div>グループ</div>
               <div>メールアドレス</div>
               <div>電話番号</div>
-
               <div (click)="onSortChange('certification_name')">
                 日本語能力 {{ ordCertificationName ==  "asc" ? "▲▽" : "▽▲"}}
               </div>
@@ -64,11 +61,13 @@
               </div>
               <div>点数</div>
             </div>
-
             <!-- thực hiện hiển thị employee---------------------------------------------------->
             <div class="css-grid-table-body" *ngFor="let e of listEmployee">
-              <div class="" [routerLink]="['/detail', e.employeeId]">{{e.employeeId}}</div>
-              <!-- <div (click)="onEmployeeClicked(e.employeeId)">{{e.employeeId}}</div> -->
+              <!-- <div class="" [routerLink]="['/detail', e.employeeId]">{{e.employeeId}}</div> -->
+              <!-- <div class=""(click)="onEmployeeClick(e.employeeId)">{{e.employeeId}}</div> -->
+              <div [routerLink]="['/detail']" [state]="{ employeeId: e.employeeId }">
+                {{ e.employeeId }}
+              </div>
               <div class="text-wrap">{{e.employeeName}}</div>
               <div class="text-wrap">{{e.employeeBirthDate | date :'yyyy/MM/dd'}}</div>
               <div class="text-wrap">{{e.departmentName}}</div>

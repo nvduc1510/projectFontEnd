@@ -11,7 +11,7 @@ export class ShareDateService {
   data$ = this.dataSubject.asObservable();
 
   /**
-   * Cập nhật lại dữ liệu
+   * Set dữ liệu vào
    * @param data tham số dữ liệu mới
    */
   setData(data: any) {
@@ -19,12 +19,12 @@ export class ShareDateService {
   }
 
   /**
+   * lấy dữ liệu ra
    * @param data tham số truyền vào
    * return giá trị hiện tại
    */
   getData(): any {
     return this.dataSubject.getValue();
   }
-
   constructor() { }
 }

@@ -6,7 +6,7 @@
                 <!-- <div>{{data.errors|json}}</div> -->
 				<div class="content-main">
 					<div class="row">
-						<form class="c-form box-shadow was-validated" [formGroup]="data" (ngSubmit)="submit()">
+						<form class="c-form box-shadow was-validated" [formGroup]="data" (ngSubmit)="directionConfirm()">
 							<ul>
 								<li class="title">会員情報編集</li>
 								<li class="box-err" *ngIf="errorMessage">
@@ -17,25 +17,23 @@
                                 <li class="form-group row d-flex">
                                     <label class="col-form-label col-sm-2"><i class="relative">カタカナ氏名:<span class="note-red">*</span></i></label>
                                     <div class="col-sm col-sm-10">
-                                        <input type="text" class="form-control" formControlName="employeeLoginId" [ngClass]="{'is-invalid' : submitted && data.controls['employeeLoginId'].errors} ">
-                                        <div *ngIf="((data.get('employeeLoginId')?.errors) && ( data.get('employeeLoginId')?.touched || data.get('employeeLoginId')?.dirty ))|| isSubmit ">
+                                        <input type="text" class="form-control" formControlName="employeeLoginId" [ngClass]="{'is-invalid' : submitted && data.controls['employeeLoginId'].errors}" [readonly] = 'disEmployeeName' [class.readonLy]="disEmployeeName" >
+                                        <div *ngIf="((data.get('employeeLoginId')?.errors) && ( data.get('employeeLoginId')?.touched))|| isSubmit ">
                                             <div class="invalid-feedback " >
                                                 {{data.controls['employeeLoginId'].errors?.['params']}}
                                             </div>
                                         </div>
-                                        
                                     </div>
                                 </li>
-								
                                 <!-- Hiển thị danh sách department---------------------------------------->
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">グループ:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
 										<select class="form-control" formControlName="departmentId">
                                             <option value="">選択してください</option>
-											<option *ngFor="let de of listDepartment" [value]="de.departmentId">{{de.departmentName}}</option>
+											<option *ngFor="let de of listDepartment" [value]="de.departmentId">{{de?.departmentName}}</option>
 										</select>
-                                        <div *ngIf="(data.get('departmentId')?.errors && ( data.get('departmentId')?.touched || data.get('departmentId')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data.get('departmentId')?.errors && ( data.get('departmentId')?.touched  )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['departmentId'].errors?.['params']}}
                                             </div>
@@ -47,7 +45,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
                                         <input type="text" class="form-control" formControlName="employeeName">
-                                        <div *ngIf=" (data.get('employeeName')?.errors && (data.get('employeeName')?.touched ||  data.get('employeeName')?.dirty )) || isSubmit">
+                                        <div *ngIf=" (data.get('employeeName')?.errors && (data.get('employeeName')?.touched )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeName'].errors?.['params']}}
                                             </div>
@@ -59,7 +57,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">カタカナ氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                       
 										<input type="text" class="form-control" formControlName="employeeNameKana">
-                                        <div *ngIf="(data.get('employeeNameKana')?.errors && ( data.get('employeeNameKana')?.touched ||  data.get('employeeNameKana')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeNameKana')?.errors && ( data.get('employeeNameKana')?.touched )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeNameKana'].errors?.['params']}}
                                             </div>
@@ -74,7 +72,7 @@
 											<input class="form-control"  #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" formControlName="employeeBirthDate" [bsConfig]="bsConfig" >
 											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar" ></i></span>
 										</div>
-                                        <div *ngIf=" (data.get('employeeBirthDate')?.errors && ( data.get('employeeBirthDate')?.touched ||  data.get('employeeBirthDate')?.dirty )) || isSubmit">
+                                        <div *ngIf=" (data.get('employeeBirthDate')?.errors && ( data.get('employeeBirthDate')?.touched)) || isSubmit">
                                             <div class="invalid-feedbacks">
                                                 {{data.controls['employeeBirthDate'].errors?.['params']}}
                                             </div>
@@ -86,7 +84,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">メールアドレス:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                     
                                         <input type="text" class="form-control" formControlName="employeeEmail">
-                                        <div *ngIf="(data.get('employeeEmail')?.errors && ( data.get('employeeEmail')?.touched ||  data.get('employeeEmail')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeEmail')?.errors && ( data.get('employeeEmail')?.touched )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeEmail'].errors?.['params']}}
                                             </div>
@@ -98,7 +96,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">電話番号:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
                                         <input type="text" class="form-control" formControlName="employeeTelephone">
-                                        <div *ngIf="(data.get('employeeTelephone')?.errors && ( data.get('employeeTelephone')?.touched || data.get('employeeTelephone')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeTelephone')?.errors && ( data.get('employeeTelephone')?.touched)) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeTelephone'].errors?.['params']}}
                                             </div>
@@ -110,7 +108,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10"> 
                                         <input type="password" class="form-control" formControlName="employeeLoginPassword">
-                                        <div *ngIf="(data.get('employeeLoginPassword')?.errors && ( data.get('employeeLoginPassword')?.touched ||  data.get('employeeLoginPassword')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeLoginPassword')?.errors && ( data.get('employeeLoginPassword')?.touched )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeLoginPassword'].errors?.['params']}}
                                             </div>
@@ -122,7 +120,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード（確認）:</i></label>
 									<div class="col-sm col-sm-10">      
                                         <input type="password" class="form-control" formControlName="employeeLoginPasswordConfirm">
-                                        <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched ||  data.get('employeeLoginPasswordConfirm')?.dirty )) || isSubmit">
+                                        <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched )) || isSubmit">
                                             <div class="invalid-feedback">
                                                 {{data.errors?.['params']}}
                                             </div>
@@ -158,7 +156,7 @@
                                                 <div class="invalid-feedbacks">
                                                     {{data.get('certifications.certificationStartDate')?.errors?.['params']}}
                                                 </div>
-                                            </div>
+                                            </div>  
                                         </div>
                                     </li>
                                     <!-- Textbox certificationEndDate--------------------------------------------->
@@ -175,7 +173,6 @@
                                                     <!-- {{data.get('certifications.certificationEndDate')?.errors?.['params']}} -->
                                                 </div>
                                             </div>
-                                           
                                         </div>
                                     </li>
                                     <!-- Textbox employeeCertificationScore-------------------------------------->
@@ -183,7 +180,7 @@
                                         <label class="col-form-label col-sm-2"><i class="relative">点数:</i></label>
                                         <div class="col-sm col-sm-10">
                                             <input type="text" class="form-control" formControlName="" formControlName="employeeCertificationScore"> 
-                                            <div *ngIf="data.get('certifications.employeeCertificationScore')?.errors && ( data.get('certifications.employeeCertificationScore')?.touched ||  data.get('certifications.employeeCertificationScore')?.dirty )">
+                                            <div *ngIf="data.get('certifications.employeeCertificationScore')?.errors && ( data.get('certifications.employeeCertificationScore')?.touched)">
                                                 <div class="invalid-feedback">
                                                     {{data.get('certifications.employeeCertificationScore')?.errors?.['params']}}
                                                 </div>

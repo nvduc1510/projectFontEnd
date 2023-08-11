@@ -1,10 +1,10 @@
 /**
  * Đại diện cho chi tiết chứng chỉ của một nhân viên.
  */
-export interface DetailEmployeeCertification {
+export interface EmployeeCertification {
     certificationId: number;
     certificationName: string;
-    startDate: Date;
-    endDate: Date;
-    score: number;
+    certificationStartDate: string;
+    certificationEndDate: string;
+    employeeCertificationScore: number;
 }

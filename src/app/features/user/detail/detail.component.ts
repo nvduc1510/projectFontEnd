@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Detail } from 'src/app/model/detail';
 import { EmployeeService } from 'src/app/service/employee.service';
+import { ShareDateService } from 'src/app/service/share-date.service';
 
 
 @Component({
@@ -9,50 +10,49 @@ import { EmployeeService } from 'src/app/service/employee.service';
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class DetailComponent{
+export class DetailComponent {
   employee!: Detail;
-  a : any;
+  employeeId: any;
+  employeeAdd !:any;
+
   certification: any;
 
   isForm = false;
 
-  selectedEmployee : any;
+  selectedEmployee: any;
 
-  errorMes : string = '';
+  errorMes: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private employeeService: EmployeeService) { }
+    private employeeService: EmployeeService,
+    private shareData : ShareDateService) { }
 
-    ngOnInit(): void {
-      this.route.params.subscribe((params) => {
-        const employeeId = params['employeeId'];
-        this.getEmployeeInfoById(employeeId);
-      });
-   }
-
-  getEmployeeInfoById(employeeId: number) {
-    this.employeeService.getEmployeeById(employeeId).subscribe(
-      (data: Detail) => {
+  ngOnInit(): void {
+    // lấy employee qua employeeId truyền sang
+    this.employeeId = history.state.employeeId;
+    this.employeeService.getEmployeeById(this.employeeId).subscribe(
+      (data) => {
         this.employee = data;
         this.certification = this.employee?.certifications;
+        // Lưu thông tin nhân viên vào sessionStorage
+        // sessionStorage.setItem('employee', JSON.stringify(this.employee));
       },
       (error) => {
-        console.error('Error fetching employee:', error);
+        console.error(error);
       }
     );
-  } 
+  }
+  // hiển thị form thông báo xác nhận xoá
   click() {
     this.isForm = true;
   }
+  // Thoát khỏi form thông báo xác nhận xoá
   cancelForm() {
     this.isForm = false;
   }
-
-  /**
-   * Phương thức này dùng để xóa thông tin của một nhân viên.
-   */
+  // Thực hiện xoá 1 employee
   deleteEmployee() {
     // Kiểm tra xem có tồn tại employeeId để xóa hay không.
     if (this.employee.employeeId) {
@@ -61,7 +61,6 @@ export class DetailComponent{
         next: res => {
           // Kiểm tra phản hồi từ máy chủ để kiểm tra việc xóa thành công (code === 200)
           if (res.code === 200) {
-            // Nếu xóa nhân viên thành công, hiển thị thông báo thành công.
             const message = "ユーザの削除が完了しました。";
             this.router.navigate(['messageAdd'], { state: { messageInf: message } });
             console.log("Errr: ", res);
@@ -70,10 +69,13 @@ export class DetailComponent{
             this.isForm = false;
             this.errorMes = res.message.params;
             console.log("Test: ", this.errorMes);
-            
           }
         }
       });
     }
+  }
+  directionData(employeeId: any) {
+    this.router.navigate(['/user/add'], { state: { employeeId } });
+    console.log("EmployeeId: ", employeeId);
   }
 }
