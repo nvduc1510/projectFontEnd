@@ -79,11 +79,11 @@ export class ConfirmComponent {
     }
     const checkEmployeeId = history.state.getData;
     const id = checkEmployeeId?.employeeForm.employeeId
-    if(id ) {
+    if(id) {
       // Thực hiện updateEmployee
       this.employeeService.updateEmployee(id, employeeData).subscribe({
         next: res => {
-        const message = "ユーザの更新が完了しました。";
+        const message = "ユーザの更新が完了しました。 eidt";
         this.route.navigate(['messageAdd'], {state: {messageInf : message}})
         console.log("a",employeeData);
         }, error: (err: HttpErrorResponse) => {
@@ -99,22 +99,32 @@ export class ConfirmComponent {
       // Thực hiện tạo mới một employee
       this.employeeService.createEmployee(employeeData).subscribe({
         next: res => {
-          const message = "ユーザの登録が完了しました。";
-          this.route.navigate(['messageAdd'], { state: { messageInf: message } }); 
+          if(res.code === 200) {
+            const message = "ユーザの登録が完了しました。add";
+            this.route.navigate(['messageAdd'], { state: { messageInf: message } }); 
+            console.log("code: " ,res.code);
+          } else {
+            const message = 'システムエラーが発生しました。'
+            const employeeFormValue = this.employeeForm;
+            console.log("check", employeeFormValue);
+            
+            this.route.navigate(['user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
+          }
+        
         },
         // TH lỗi trả về lỗi message và truyền sang màn add
-        error: (err: HttpErrorResponse) => {
-          if (err.status === 500) {
-            const message = 'システムエラーが発生しました。'
-            const employeeFormValue = this.shareData.setData(this.employeeForm);
-            this.route.navigate(['/**/'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
-          }
-        }
+        // error: (err: HttpErrorResponse) => {
+        //   if (err.status === 500) {
+        //     const message = 'システムエラーが発生しました。'
+        //     const employeeFormValue = this.shareData.setData(this.employeeForm);
+        //     this.route.navigate(['user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
+        //   }
+        // }
+        
       });
       console.log("employee: ", employeeData);
       
     }
-    
   }
 
 

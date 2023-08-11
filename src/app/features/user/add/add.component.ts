@@ -15,15 +15,15 @@ import { Detail } from 'src/app/model/detail';
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css']
 })
-export class AddComponent  implements OnInit{
-  listDepartment : Department[] = [];
-  listCertification !: any  [];
+export class AddComponent implements OnInit {
+  listDepartment: Department[] = [];
+  listCertification !: any[];
   data !: FormGroup;
   isErrorMessage = false;
   hadCertification: boolean = false;
   isSubmit = false;
 
-  public bsConfig: Partial <BsDatepickerConfig>;
+  public bsConfig: Partial<BsDatepickerConfig>;
   bsValue = new Date();
 
   submitted = false;
@@ -33,51 +33,49 @@ export class AddComponent  implements OnInit{
   errorMessage!: string;
   certification: any;
 
-  employeeId : any;
+  employeeId: any;
   disEmployeeName = false;
 
   constructor(
-    private route : Router,
+    private route: Router,
     private fb: FormBuilder,
     private departmentService: DepartmentService,
     private certificationService: CertificationService,
-    private employeeService : EmployeeService) {
-      this.bsConfig = {
-        dateInputFormat: 'YYYY/MM/DD'
-      }
+    private employeeService: EmployeeService) {
+    this.bsConfig = {
+      dateInputFormat: 'YYYY/MM/DD'
+    }
   }
 
   ngOnInit() {
     this.errorMessage = history.state.errorMessage;
     // tạo form group
-    this.data = this.fb.group ({
-      employeeId:[''],
-      employeeLoginId : ['', [CustomValidatorComponent.ValidEmployeeLoginId]],
-      departmentId : ['', [CustomValidatorComponent.ValidDepartment]],
-      employeeName : ['', [CustomValidatorComponent.ValidEmployeeName]],
-      employeeNameKana : ['', [CustomValidatorComponent.ValidEmployeeNameKana]],
-      employeeBirthDate : ['', [CustomValidatorComponent.ValidEmployeeBirthDate]],
-      employeeEmail : ['', [CustomValidatorComponent.ValidEmployeeEmail]],
-      employeeTelephone : ['', [CustomValidatorComponent.ValidEmployeeTelePhone]],
-      employeeLoginPassword : ['', [CustomValidatorComponent.ValidLoginPassword]],
-      employeeLoginPasswordConfirm : ['', [CustomValidatorComponent.ValidLoginPasswordConfirm]],
-      certifications : this.fb.group({
-        certificationId : [''],
-        certificationStartDate : [''],
-        certificationEndDate : [''],
-        employeeCertificationScore : ['', CustomValidatorComponent.ValidaScore]
+    this.data = this.fb.group({
+      employeeId: [''],
+      employeeLoginId: ['', [CustomValidatorComponent.ValidEmployeeLoginId]],
+      departmentId: ['', [CustomValidatorComponent.ValidDepartment]],
+      employeeName: ['', [CustomValidatorComponent.ValidEmployeeName]],
+      employeeNameKana: ['', [CustomValidatorComponent.ValidEmployeeNameKana]],
+      employeeBirthDate: ['', [CustomValidatorComponent.ValidEmployeeBirthDate]],
+      employeeEmail: ['', [CustomValidatorComponent.ValidEmployeeEmail]],
+      employeeTelephone: ['', [CustomValidatorComponent.ValidEmployeeTelePhone]],
+      employeeLoginPassword: ['', [CustomValidatorComponent.ValidLoginPassword]],
+      employeeLoginPasswordConfirm: ['', [CustomValidatorComponent.ValidLoginPasswordConfirm]],
+      certifications: this.fb.group({
+        certificationId: [''],
+        certificationStartDate: [''],
+        certificationEndDate: [''],
+        employeeCertificationScore: ['']
       },
-      {
-        validators: CustomValidatorComponent.certificateDateValidator,
-      })
-    },{
-      validator : CustomValidatorComponent.ConfirmPassword,
+        {
+          validators: CustomValidatorComponent.certificateDateValidator,
+        })
+    }, {
+      validator: CustomValidatorComponent.ConfirmPassword,
     })
+
     
-    this.getListCertification();
-    this.getListDepartment();
-    this.patchValue();
-    
+
     // check xem đường truyền có tồn tại id hay không
     const stateEmployeeId = history.state.employeeId;
     if (stateEmployeeId) {
@@ -85,7 +83,7 @@ export class AddComponent  implements OnInit{
       this.disEmployeeName = true;
       const employeeLoginPassword = this.data.get('employeeLoginPassword');
       const employeeLoginPasswordConfirm = this.data.get('employeeLoginPasswordConfirm');
-      if( this.data.get('employeeLoginPassword')?.value == '') {
+      if (this.data.get('employeeLoginPassword')?.value == '') {
         this.data.get('employeeLoginPassword')?.clearValidators();
         this.data.get('employeeLoginPasswordConfirm')?.clearValidators();
       } else {
@@ -96,6 +94,12 @@ export class AddComponent  implements OnInit{
       employeeLoginPasswordConfirm?.updateValueAndValidity();
       this.getEmployeeById(this.employeeId);
     }
+
+    this.getListCertification();
+    this.getListDepartment();
+    this.patchValue();
+    this.restoreFormData();
+    this.listenToFormData();
 
   }
 
@@ -119,14 +123,15 @@ export class AddComponent  implements OnInit{
 
   //biding dữ liệu sang màn confirm
   directionConfirm() {
-    if(this.data.valid){
+    if (this.data.valid) {
       this.isSubmit = false;
       const departmentId = this.data.value.departmentId;
       const department = this.listDepartment.find(d => d.departmentId == departmentId);
       const certificationId = this.data.value.certifications.certificationId;
       const certification = this.listCertification.find(c => c.certificationId == certificationId);
-      let getData = {employeeForm : this.data.value, department: department, certification : certification}
-      this.route.navigate(['/user/confirm'], { state: {getData}});
+      let getData = { employeeForm: this.data.value, department: department, certification: certification }
+      this.route.navigate(['/user/confirm'], { state: { getData } });
+      this.clearFormData();
     }
     else {
       this.isSubmit = true;
@@ -134,10 +139,10 @@ export class AddComponent  implements OnInit{
   }
   // Gán dữ liệu từ màn confirm back 
   patchValue() {
-    const patchValue= history.state.data;
+    const patchValue = history.state.data;
     const certificationId = patchValue?.certifications?.certificationId;
-    if(certificationId){
-        this.hadCertification = true;
+    if (certificationId) {
+      this.hadCertification = true;
     }
     this.data.patchValue(history.state.data);
   }
@@ -146,12 +151,12 @@ export class AddComponent  implements OnInit{
   onCertificationChange() {
     const certificationId = this.data.value?.certifications?.certificationId;
     const certification = this.data.get('certifications');
-    if(certificationId){
+    if (certificationId) {
       this.hadCertification = true;
       certification?.get('certificationStartDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
       certification?.get('certificationEndDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
       certification?.get('employeeCertificationScore')?.setValidators(CustomValidatorComponent.ValidScore);
-    }else{
+    } else {
       this.hadCertification = false;
       // clear validators khi certification null
       certification?.get('certificationStartDate')?.clearValidators();
@@ -167,8 +172,8 @@ export class AddComponent  implements OnInit{
     certification?.get('employeeCertificationScore')?.updateValueAndValidity();
   }
   // lấy employee qua id
-  getEmployeeById(employeeId : any) {
-    this.employeeService.getEmployeeById(employeeId).subscribe (
+  getEmployeeById(employeeId: any) {
+    this.employeeService.getEmployeeById(employeeId).subscribe(
       (response) => {
         console.log(response);
         this.data.patchValue(response);
@@ -188,5 +193,31 @@ export class AddComponent  implements OnInit{
         console.error('Error fetching employee details:', error);
       }
     );
+  }
+  // Lưu session
+  saveFormData(): void {
+    // sessionStorage.setItem('formData', JSON.stringify(this.data.value)) 
+    sessionStorage.setItem('formGroupData', JSON.stringify(this.data.value));
+  }
+  // khôi phục trạng thái form gruop
+  restoreFormData() {
+    const formData = sessionStorage.getItem('formGroupData');
+    if (formData) {
+      this.data.patchValue(JSON.parse(formData));
+    }
+  }
+  listenToFormData() {
+    this.data.valueChanges.subscribe(() => {
+      this.saveFormData();
+    });
+  }
+  // Xoá session
+  clearFormData() {
+    sessionStorage.removeItem('formGroupData');
+  }
+
+  cancel(){
+    this.clearFormData();
+    this.route.navigate(['/user/list']);
   }
 }
