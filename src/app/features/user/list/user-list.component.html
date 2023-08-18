@@ -1,5 +1,5 @@
 <main>
-  <div class="container">
+  <div class="container ">
     <app-header></app-header>
     <div class="content">
       <div class="content-main">
@@ -11,7 +11,7 @@
               <li class="form-group row">
                 <label class="col-form-label">氏名:</label>
                 <div class="col-sm">
-                  <input id="input-field" type="text" formControlName="employeeName" oninput="this.value = this.value.substring(0, 125);" [maxlength]="125"/>
+                  <input #firstElement  id="input-field" type="text" formControlName="employeeName" oninput="this.value = this.value.substring(0, 125);" [maxlength]="125"/>
                 </div>
               </li>
               <!-- dropdown department---------------------------------------------------------------------------------->
@@ -36,11 +36,11 @@
         </div>
 
         <!-- Thực hiện lỗi khi không có bản ghi nào-------------------------------------->
-        <div class="box-err" *ngIf="listEmployee.length===0" style="color: red; margin-top: 40px;">
-          <div class="box-err-content"> 検索条件に該当するユーザが見つかりません。 (MSG005)</div>
+        <div class="rrow row-table" *ngIf="totalRecords === 0" style="color: red; margin-top: 40px;">
+          <div>{{errorMessage}}</div>
       </div>
       <!-- Thực hiện sort-------------------------------------------------------->
-        <div class="row row-table" *ngIf="listEmployee.length > 0">
+        <div class="row row-table" *ngIf="totalRecords > 0">
           <div class="css-grid-table box-shadow">
             <div class="css-grid-table-header">
               <div>ID</div>
@@ -63,8 +63,6 @@
             </div>
             <!-- thực hiện hiển thị employee---------------------------------------------------->
             <div class="css-grid-table-body" *ngFor="let e of listEmployee">
-              <!-- <div class="" [routerLink]="['/detail', e.employeeId]">{{e.employeeId}}</div> -->
-              <!-- <div class=""(click)="onEmployeeClick(e.employeeId)">{{e.employeeId}}</div> -->
               <div [routerLink]="['/detail']" [state]="{ employeeId: e.employeeId }">
                 {{ e.employeeId }}
               </div>

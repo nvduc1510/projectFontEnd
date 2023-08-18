@@ -2,3 +2,11 @@
     white-space: pre-wrap;
     word-wrap: break-word;
   }
+  /* Adjust the column widths as needed */
+  .css-grid-table-header > div,
+  .css-grid-table-body > div {
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+  
+

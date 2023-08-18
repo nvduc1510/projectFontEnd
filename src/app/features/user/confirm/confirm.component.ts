@@ -1,8 +1,6 @@
-import { Observable, of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { getDate } from 'ngx-bootstrap/chronos/utils/date-getters';
+import { Router } from '@angular/router';
 import { AddEmployeeDTO } from 'src/app/model/addEmployeeDTO';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { ShareDateService } from 'src/app/service/share-date.service';
@@ -45,14 +43,25 @@ export class ConfirmComponent {
     this.employeeForm = this.data?.employeeForm;
     this.employeeCertification = this.data?.employeeForm.certifications;
     this.certification = this.data?.certification;
+    console.log("form: ", this.employeeForm);
+    
   }
 
   /**
    * Thực hiện back về màn add
    */
   cancel(){
-    const data = this.employeeForm;
-    this.route.navigate(['/user/add'],  { state: { data } });
+    const checkEmployeeId = history.state.getData;
+    const employeeId = checkEmployeeId?.employeeForm.employeeId
+    if(employeeId){
+      const data = this.employeeForm;
+      this.route.navigate(['/user/add'],  { state: { data:data, employeeId : employeeId } });
+
+    } else {
+      const data = this.employeeForm;
+      this.route.navigate(['/user/add'],  { state: { data:data } });
+    }
+    
   }
 
   // Xử lý dữ liệu từ form
@@ -83,7 +92,7 @@ export class ConfirmComponent {
       // Thực hiện updateEmployee
       this.employeeService.updateEmployee(id, employeeData).subscribe({
         next: res => {
-        const message = "ユーザの更新が完了しました。 eidt";
+        const message = "ユーザの更新が完了しました。";
         this.route.navigate(['messageAdd'], {state: {messageInf : message}})
         console.log("a",employeeData);
         }, error: (err: HttpErrorResponse) => {
@@ -100,26 +109,16 @@ export class ConfirmComponent {
       this.employeeService.createEmployee(employeeData).subscribe({
         next: res => {
           if(res.code === 200) {
-            const message = "ユーザの登録が完了しました。add";
+            const message = "ユーザの登録が完了しました。";
             this.route.navigate(['messageAdd'], { state: { messageInf: message } }); 
             console.log("code: " ,res.code);
           } else {
             const message = 'システムエラーが発生しました。'
             const employeeFormValue = this.employeeForm;
             console.log("check", employeeFormValue);
-            
             this.route.navigate(['user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
           }
-        
         },
-        // TH lỗi trả về lỗi message và truyền sang màn add
-        // error: (err: HttpErrorResponse) => {
-        //   if (err.status === 500) {
-        //     const message = 'システムエラーが発生しました。'
-        //     const employeeFormValue = this.shareData.setData(this.employeeForm);
-        //     this.route.navigate(['user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
-        //   }
-        // }
         
       });
       console.log("employee: ", employeeData);

@@ -63,7 +63,6 @@ export class DetailComponent {
           if (res.code === 200) {
             const message = "ユーザの削除が完了しました。";
             this.router.navigate(['messageAdd'], { state: { messageInf: message } });
-            console.log("Errr: ", res);
           } else {
             // Nếu mã phản hồi không phải 200, xử lý trường hợp lỗi.
             this.isForm = false;

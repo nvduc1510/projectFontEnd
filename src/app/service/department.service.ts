@@ -13,7 +13,7 @@ export class DepartmentService {
   /**
    * Gửi yêu cầu HTTPGet lấy API  trả về một Observable
    */
-  getListDepartment() : Observable<any>{
+  getAllDepartment() : Observable<any>{
     const url = `${DEPARTMENT_API}`;
     return this.http.get(url);
   }

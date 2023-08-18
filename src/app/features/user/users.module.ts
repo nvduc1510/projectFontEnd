@@ -10,12 +10,13 @@ import { ConfirmComponent } from './confirm/confirm.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DetailComponent } from './detail/detail.component';
 
+
 @NgModule({
   declarations: [
     UserListComponent,
     AddComponent,
     ConfirmComponent,
-    DetailComponent
+    DetailComponent,
     
   ],
   imports: [

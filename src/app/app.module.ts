@@ -12,6 +12,7 @@ import { TokenInterceptor } from './shared/auth/token.interceptor';
 import { FormsModule } from '@angular/forms';
 import { MessageAddComponent } from './features/message/message-add/message-add.component';
 import { MessageComponent } from './features/valid/message/message.component';
+import { ValidateComponent } from './features/valid/validate/validate.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { MessageComponent } from './features/valid/message/message.component';
     SystemErrorComponent,
     MessageAddComponent,
     MessageComponent,
+    ValidateComponent,
 
 
   ],

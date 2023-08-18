@@ -25,7 +25,7 @@ export class EmployeeService {
    * @param limit Số lượng bản ghi tối đa trả về (kiểu dữ liệu: number).
    * @returns  trả về một đối tượng Observable<Page>.
    */
-  getListEmployees(employeeName: string, departmentId: number, 
+  getAllEmployee(employeeName: string, departmentId: number, 
     ordEmployeeName: string, ordCertificationName: string, 
     ordEndDate: string, offset: number, limit: number) : Observable<Page> {
       const params = new HttpParams()

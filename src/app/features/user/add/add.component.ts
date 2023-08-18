@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Department } from 'src/app/model/department';
 import { CertificationService } from 'src/app/service/certification.service';
 import { DepartmentService } from 'src/app/service/department.service';
-import { ShareDateService } from 'src/app/service/share-date.service';
-import { CustomValidatorComponent } from './../../valid/custom-validator/custom-validator.component';
 import { EmployeeService } from 'src/app/service/employee.service';
-import { Detail } from 'src/app/model/detail';
+import { ValidateComponent } from '../../valid/validate/validate.component';
 
 @Component({
   selector: 'app-add',
@@ -16,25 +14,37 @@ import { Detail } from 'src/app/model/detail';
   styleUrls: ['./add.component.css']
 })
 export class AddComponent implements OnInit {
-  listDepartment: Department[] = [];
-  listCertification !: any[];
-  data !: FormGroup;
-  isErrorMessage = false;
-  hadCertification: boolean = false;
-  isSubmit = false;
 
   public bsConfig: Partial<BsDatepickerConfig>;
   bsValue = new Date();
 
-  submitted = false;
-  hasError = false;
-
-  employeeFormValue: any;
-  errorMessage!: string;
-  certification: any;
-
   employeeId: any;
-  disEmployeeName = false;
+
+  // sssssssssssssssss
+  listDepartment: Department[] = [];
+  listCertification !: any[];
+
+  // Group data
+  data !: FormGroup;
+
+  //Check message error
+  isErrorMessage = false;
+
+  //Check id certification
+  hadCertification = false;
+
+  //check xem còn valid khi submit sang màn confirm
+  isSubmit =false;
+
+  // message error
+  errorMessage = '';
+
+  disEmployeeLoginId = false;
+
+  @ViewChild('employeeName') employeeName: ElementRef | undefined;
+  @ViewChild('employeeLoginId') employeeLoginId: ElementRef | undefined;
+
+
 
   constructor(
     private route: Router,
@@ -45,22 +55,18 @@ export class AddComponent implements OnInit {
     this.bsConfig = {
       dateInputFormat: 'YYYY/MM/DD'
     }
-  }
-
-  ngOnInit() {
-    this.errorMessage = history.state.errorMessage;
     // tạo form group
     this.data = this.fb.group({
       employeeId: [''],
-      employeeLoginId: ['', [CustomValidatorComponent.ValidEmployeeLoginId]],
-      departmentId: ['', [CustomValidatorComponent.ValidDepartment]],
-      employeeName: ['', [CustomValidatorComponent.ValidEmployeeName]],
-      employeeNameKana: ['', [CustomValidatorComponent.ValidEmployeeNameKana]],
-      employeeBirthDate: ['', [CustomValidatorComponent.ValidEmployeeBirthDate]],
-      employeeEmail: ['', [CustomValidatorComponent.ValidEmployeeEmail]],
-      employeeTelephone: ['', [CustomValidatorComponent.ValidEmployeeTelePhone]],
-      employeeLoginPassword: ['', [CustomValidatorComponent.ValidLoginPassword]],
-      employeeLoginPasswordConfirm: ['', [CustomValidatorComponent.ValidLoginPasswordConfirm]],
+      employeeLoginId: ['', [ValidateComponent.ValidEmployeeLoginId]],
+      departmentId: ['', [ValidateComponent.ValidDepartment]],
+      employeeName: ['', [ValidateComponent.ValidEmployeeName]],
+      employeeNameKana: ['', [ValidateComponent.ValidEmployeeNameKana]],
+      employeeBirthDate: ['', [ValidateComponent.ValidEmployeeBirthDate]],
+      employeeEmail: ['', [ValidateComponent.ValidEmployeeEmail]],
+      employeeTelephone: ['', [ValidateComponent.ValidEmployeeTelePhone]],
+      employeeLoginPassword: ['', [ValidateComponent.ValidLoginPassword]],
+      employeeLoginPasswordConfirm: ['', [ValidateComponent.ValidLoginPasswordConfirm]],
       certifications: this.fb.group({
         certificationId: [''],
         certificationStartDate: [''],
@@ -68,44 +74,23 @@ export class AddComponent implements OnInit {
         employeeCertificationScore: ['']
       },
         {
-          validators: CustomValidatorComponent.certificateDateValidator,
+          validators: ValidateComponent.certificateDateValidator,
         })
     }, {
-      validator: CustomValidatorComponent.ConfirmPassword,
+      validator: ValidateComponent.ConfirmPassword,
     })
+  }
 
-    
-
-    // check xem đường truyền có tồn tại id hay không
-    const stateEmployeeId = history.state.employeeId;
-    if (stateEmployeeId) {
-      this.employeeId = stateEmployeeId;
-      this.disEmployeeName = true;
-      const employeeLoginPassword = this.data.get('employeeLoginPassword');
-      const employeeLoginPasswordConfirm = this.data.get('employeeLoginPasswordConfirm');
-      if (this.data.get('employeeLoginPassword')?.value == '') {
-        this.data.get('employeeLoginPassword')?.clearValidators();
-        this.data.get('employeeLoginPasswordConfirm')?.clearValidators();
-      } else {
-        employeeLoginPassword?.setValidators([CustomValidatorComponent.ValidLoginPassword]);
-        employeeLoginPasswordConfirm?.setValidators([CustomValidatorComponent.ValidLoginPasswordConfirm]);
-      }
-      employeeLoginPassword?.updateValueAndValidity();
-      employeeLoginPasswordConfirm?.updateValueAndValidity();
-      this.getEmployeeById(this.employeeId);
-    }
-
+  ngOnInit() {
+    this.errorMessage = history.state.errorMessage;
     this.getListCertification();
     this.getListDepartment();
-    this.patchValue();
-    this.restoreFormData();
-    this.listenToFormData();
-
+    this.assignValue();
   }
 
   // Lấy danh sách department
   getListDepartment(): void {
-    this.departmentService.getListDepartment().subscribe(
+    this.departmentService.getAllDepartment().subscribe(
       (data: any) => {
         this.listDepartment = data.department;
       }
@@ -131,20 +116,61 @@ export class AddComponent implements OnInit {
       const certification = this.listCertification.find(c => c.certificationId == certificationId);
       let getData = { employeeForm: this.data.value, department: department, certification: certification }
       this.route.navigate(['/user/confirm'], { state: { getData } });
-      this.clearFormData();
     }
     else {
       this.isSubmit = true;
     }
   }
-  // Gán dữ liệu từ màn confirm back 
-  patchValue() {
+
+  // Gán dữ liệu vào màn hình
+  assignValue() {
+    // Truyền từ detail sang
+    const dEmployeeId = history.state.employeeId;
+    // Truyền từ confirm sang
     const patchValue = history.state.data;
+    // check certificationId
     const certificationId = patchValue?.certifications?.certificationId;
-    if (certificationId) {
-      this.hadCertification = true;
+    // Kiểm tra xem id có tồn tại hay không
+    if (dEmployeeId) {
+      // Kiểm tra xem có dữ liệu từ patchValue không
+      if (patchValue) {
+        this.disEmployeeLoginId = true;
+        this.data.patchValue(history.state.data);
+        const password = this.data.get('employeeLoginPassword');
+        const passwordConfirm = this.data.get('employeeLoginPasswordConfirm');
+        if (password?.value == '') {
+          password?.clearValidators();
+          passwordConfirm?.clearValidators();
+        } else {
+          password?.setValidators([ValidateComponent.ValidLoginPassword]);
+          passwordConfirm?.setValidators([ValidateComponent.ValidLoginPasswordConfirm]);
+        }
+        password?.updateValueAndValidity();
+        passwordConfirm?.updateValueAndValidity();
+      }
+      else {
+        this.disEmployeeLoginId = true;
+        this.data.patchValue(history.state.data);
+        const password = this.data.get('employeeLoginPassword');
+        const passwordConfirm = this.data.get('employeeLoginPasswordConfirm');
+        if (password?.value == '') {
+          password?.clearValidators();
+          passwordConfirm?.clearValidators();
+        } else {
+          password?.setValidators([ValidateComponent.ValidLoginPassword]);
+          passwordConfirm?.setValidators([ValidateComponent.ValidLoginPasswordConfirm]);
+        }
+        password?.updateValueAndValidity();
+        passwordConfirm?.updateValueAndValidity();
+        this.getEmployeeById(dEmployeeId);
+      }
+    } else {
+      if (certificationId) {
+        this.hadCertification = true;
+      }
+      this.data.patchValue(patchValue);
     }
-    this.data.patchValue(history.state.data);
+
   }
 
   // xử lý validate certification
@@ -153,9 +179,9 @@ export class AddComponent implements OnInit {
     const certification = this.data.get('certifications');
     if (certificationId) {
       this.hadCertification = true;
-      certification?.get('certificationStartDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
-      certification?.get('certificationEndDate')?.setValidators([CustomValidatorComponent.ValidEmployeeBirthDate]);
-      certification?.get('employeeCertificationScore')?.setValidators(CustomValidatorComponent.ValidScore);
+      certification?.get('certificationStartDate')?.setValidators([ValidateComponent.ValidEmployeeBirthDate]);
+      certification?.get('certificationEndDate')?.setValidators([ValidateComponent.ValidEmployeeBirthDate]);
+      certification?.get('employeeCertificationScore')?.setValidators(ValidateComponent.ValidScore);
     } else {
       this.hadCertification = false;
       // clear validators khi certification null
@@ -194,30 +220,24 @@ export class AddComponent implements OnInit {
       }
     );
   }
-  // Lưu session
-  saveFormData(): void {
-    // sessionStorage.setItem('formData', JSON.stringify(this.data.value)) 
-    sessionStorage.setItem('formGroupData', JSON.stringify(this.data.value));
-  }
-  // khôi phục trạng thái form gruop
-  restoreFormData() {
-    const formData = sessionStorage.getItem('formGroupData');
-    if (formData) {
-      this.data.patchValue(JSON.parse(formData));
-    }
-  }
-  listenToFormData() {
-    this.data.valueChanges.subscribe(() => {
-      this.saveFormData();
-    });
-  }
-  // Xoá session
-  clearFormData() {
-    sessionStorage.removeItem('formGroupData');
+ 
+  cancel() {
+    this.route.navigate(['/user/list']);
   }
 
-  cancel(){
-    this.clearFormData();
-    this.route.navigate(['/user/list']);
+  ngAfterViewInit() {
+    const id = history.state.employeeId; // Lấy giá trị của tham số 'id' từ route
+
+    if (id) {
+      // Focus vào hạng mục employeeName nếu có id trong route
+      if (this.employeeName) {
+        this.employeeName.nativeElement.focus();
+      }
+    } else {
+      // Focus vào hạng mục employeeLoginId nếu không có id trong route
+      if (this.employeeLoginId) {
+        this.employeeLoginId.nativeElement.focus();
+      }
+    }
   }
 }

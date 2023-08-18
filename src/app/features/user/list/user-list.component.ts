@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, finalize, of, tap } from 'rxjs';
@@ -9,7 +9,6 @@ import { Page } from 'src/app/model/page';
 import { DepartmentService } from 'src/app/service/department.service';
 import { AppConstants } from "../../../app-constants";
 import { EmployeeService } from './../../../service/employee.service';
-import { Detail } from "src/app/model/detail";
 
 @Component({
   selector: 'app-user-list',
@@ -22,20 +21,29 @@ export class UserListComponent {
 
   loading: boolean = false;
 
-  currentPage = 1;
-  totalPages = 1;
-  totalRecords = 0;
-  offset = 1;
-  limit = 5;
-
-  employeeName: any;
-  departmentId: any;
-  ordEmployeeName = 'asc';
+  //List employee, arrange,page
+  employeeName : any;
+  departmentId : any;
+  ordEmployeeName = '';
   ordCertificationName = '';
   ordEndDate = '';
-  errorMessage: string | null = null;
-
+  errorMessage : string | null = null;
+  currentPage = 1;
+  totalPages = 0;
+  totalRecords = 0;
+  offset = 1;
+  limit = 10;
+  
+  //search
   searchForm !: FormGroup;
+
+  @ViewChild('firstElement') firstElement: ElementRef | undefined;
+
+  ngAfterViewInit() {
+    if (this.firstElement) {
+      this.firstElement.nativeElement.focus();
+    }
+  }
 
   constructor(
     public http: HttpClient,
@@ -72,21 +80,21 @@ export class UserListComponent {
       departmentId: [''],
     });
     this.getListEmployee();
-    this.getListDepartment();
+    this.getAllDepartment();
 
     // Lấy lại điều kiện sort,search,page khi back về ADM002
-    const searchParams = JSON.parse(sessionStorage.getItem('searchParams') || '{}');
-    this.employeeName = searchParams.employeeName || '';
-    this.departmentId = searchParams.departmentId || '';
-    this.ordEmployeeName = searchParams.ordEmployeeName || '';
-    this.ordCertificationName = searchParams.ordCertificationName || '';
-    this.ordEndDate = searchParams.ordEndDate || '';
-    this.offset = searchParams.offset || 1;
-    this.limit = searchParams.limit || 5;
-    this.currentPage = this.offset / this.limit + 1;
-    this.getListEmployee();
-    this.getListDepartment();
-    this.searchForm.controls['departmentId'].setValue(this.departmentId);
+    // const searchParams = JSON.parse(sessionStorage.getItem('searchParams') || '{}');
+    // this.employeeName = searchParams.employeeName || '';
+    // this.departmentId = searchParams.departmentId || '';
+    // this.ordEmployeeName = searchParams.ordEmployeeName || '';
+    // this.ordCertificationName = searchParams.ordCertificationName || '';
+    // this.ordEndDate = searchParams.ordEndDate || '';
+    // this.offset = searchParams.offset || 1;
+    // this.limit = searchParams.limit || 5;
+    // this.currentPage = this.offset / this.limit + 1;
+    // this.getListEmployee();
+    // this.getAllDepartment();
+    // this.searchForm.controls['departmentId'].setValue(this.departmentId);
   }
   // Lưu điều kiện sort,search,page vào session khi component kết thúc vòng đời
   ngOnDestroy(): void {
@@ -105,48 +113,48 @@ export class UserListComponent {
   // Hiển thị danh sách employee
   getListEmployee(): void {
     this.loading = true;
-    this.employeeService.getListEmployees(
+    this.employeeService.getAllEmployee(
       this.searchForm.get('employeeName')?.value,
       this.searchForm.get('departmentId')?.value,
       this.ordEmployeeName,
       this.ordCertificationName,
       this.ordEndDate,
       this.offset,
-      this.limit,
-    ).pipe(
-      tap((data: Page) => {
+      this.limit
+    ) .subscribe ({
+      next : (data : any) => {
         this.listEmployee = data.employees;
-        this.totalPages = data.totalRecords;
+        this.totalRecords = data.totalRecords;
         this.totalPages = Math.ceil(data.totalRecords / this.limit);
-        this.errorMessage = null;
-      }),
-      catchError((er: any) => {
-        this.listEmployee = [];
-        this.errorMessage = ' Failed to get list of employees'
-        return of(er);
-      }),
-      finalize(() => {
-        this.loading = false;
-      })
-    ).subscribe();
+        if(this.totalRecords == 0) {
+          this.loading = true;
+          this.errorMessage = "検索条件に該当するユーザが見つかりません。"
+        } else {
+          this.loading = false;
+        }
+      }, error: (error : any) => {
+        this.router.navigate(['/system-error'])
+      }
+    })
   }
 
   // Thực hiện search
-  search(): void {
-    this.offset = 1;
+  search() : void {
+    this.currentPage = 1; 
+    this.offset = 1; 
     this.employeeName = this.searchForm.controls['employeeName'].value;
     this.departmentId = this.searchForm.controls['departmentId'].value;
     this.getListEmployee();
   }
 
   // Lấy danh sách department
-  getListDepartment(): void {
-    this.departmentService.getListDepartment().subscribe(
+  getAllDepartment() {
+    this.departmentService.getAllDepartment().subscribe(
       (data: any) => {
         this.listDepartment = data.department;
       },
       (error) => {
-        console.error('Error fetching departments:', error);
+        console.error('部門を取得できません: ', error);
       }
     );
   }
@@ -155,35 +163,29 @@ export class UserListComponent {
    * Hàm này được gọi khi người dùng thay đổi cột để sắp xếp.
    * @param column Tên cột mà sắp xếp cần được áp dụng.
    */
-  onSortChange(column: string) {
+  onSortChange(column : string) {
     if (column === 'employee_name') {
-      // Chuyển đổi thứ tự sắp xếp cho cột 'employee_name'
       if (this.ordEmployeeName === 'asc') {
         this.ordEmployeeName = 'desc';
       } else {
         this.ordEmployeeName = 'asc';
       }
-      // Đặt lại sắp xếp cho các cột khác
       this.ordCertificationName = '';
       this.ordEndDate = '';
     } else if (column === 'certification_name') {
-      // Chuyển đổi thứ tự sắp xếp cho cột 'certification_name'
       if (this.ordCertificationName === 'asc') {
         this.ordCertificationName = 'desc';
       } else {
         this.ordCertificationName = 'asc';
       }
-      // Đặt lại sắp xếp cho các cột khác
       this.ordEmployeeName = '';
       this.ordEndDate = '';
     } else if (column === 'end_date') {
-      // Chuyển đổi thứ tự sắp xếp cho cột 'end_date'
       if (this.ordEndDate === 'asc') {
         this.ordEndDate = 'desc';
       } else {
         this.ordEndDate = 'asc';
       }
-      // Đặt lại sắp xếp cho các cột khác
       this.ordCertificationName = '';
       this.ordEmployeeName = '';
     }
