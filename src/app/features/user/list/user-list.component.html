@@ -46,18 +46,18 @@
               <div>ID</div>
               <div (click)="onSortChange('employee_name')">
                 氏名
-                {{ordEmployeeName ==  "asc" ? "▲▽" : "▽▲"}}
+                {{ordEmployeeName ==  "asc" ? "▲▽" : "▼△"}}
               </div>
               <div>生年月日</div>
               <div>グループ</div>
               <div>メールアドレス</div>
               <div>電話番号</div>
               <div (click)="onSortChange('certification_name')">
-                日本語能力 {{ ordCertificationName ==  "asc" ? "▲▽" : "▽▲"}}
+                日本語能力 {{ ordCertificationName ==  "asc" ? "▲▽" : "▼△"}}
               </div>
               <div (click)="onSortChange('end_date')">
                 失効日
-                {{ordEndDate  == "asc" ? "▲▽" : "▽▲"}}
+                {{ordEndDate  == "asc" ? "▲▽" : "▼△"}}
               </div>
               <div>点数</div>
             </div>

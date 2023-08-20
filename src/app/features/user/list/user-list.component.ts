@@ -32,27 +32,30 @@ export class UserListComponent {
   totalPages = 0;
   totalRecords = 0;
   offset = 1;
-  limit = 10;
+  limit = 20;
   
   //search
   searchForm !: FormGroup;
 
+  // Auto focus hạng mục đầu
   @ViewChild('firstElement') firstElement: ElementRef | undefined;
-
   ngAfterViewInit() {
     if (this.firstElement) {
       this.firstElement.nativeElement.focus();
     }
   }
-
   constructor(
     public http: HttpClient,
     private employeeService: EmployeeService,
     private departmentService: DepartmentService,
     private router: Router,
     private fb: FormBuilder
-
-  ) { }
+  ) {
+    this.searchForm = this.fb.group({
+      employeeName: [''],
+      departmentId: [''],
+    });
+  }
 
   ngOnInit(): void {
     // test call api auto inject token to header
@@ -75,40 +78,49 @@ export class UserListComponent {
     /**
      * Thực hiện tạo một form search
      */
-    this.searchForm = this.fb.group({
-      employeeName: [''],
-      departmentId: [''],
-    });
+
     this.getListEmployee();
     this.getAllDepartment();
 
     // Lấy lại điều kiện sort,search,page khi back về ADM002
-    // const searchParams = JSON.parse(sessionStorage.getItem('searchParams') || '{}');
-    // this.employeeName = searchParams.employeeName || '';
-    // this.departmentId = searchParams.departmentId || '';
-    // this.ordEmployeeName = searchParams.ordEmployeeName || '';
-    // this.ordCertificationName = searchParams.ordCertificationName || '';
-    // this.ordEndDate = searchParams.ordEndDate || '';
-    // this.offset = searchParams.offset || 1;
-    // this.limit = searchParams.limit || 5;
-    // this.currentPage = this.offset / this.limit + 1;
-    // this.getListEmployee();
-    // this.getAllDepartment();
-    // this.searchForm.controls['departmentId'].setValue(this.departmentId);
+    const searchParams = JSON.parse(sessionStorage.getItem('searchParams') || '{}');
+    this.employeeName = searchParams.employeeName || '';
+    this.departmentId = searchParams.departmentId || '';
+    this.ordEmployeeName = searchParams.ordEmployeeName || '';
+    this.ordCertificationName = searchParams.ordCertificationName || '';
+    this.ordEndDate = searchParams.ordEndDate || '';
+    this.offset = searchParams.offset || 1;
+    this.limit = searchParams.limit || 20;
+    this.currentPage = this.offset / this.limit + 1;
+    this.getListEmployee();
+    this.getAllDepartment();
+    
   }
   // Lưu điều kiện sort,search,page vào session khi component kết thúc vòng đời
   ngOnDestroy(): void {
     const searchParams = {
       employeeName: this.employeeName,
       departmentId: this.departmentId,
-      ord_employee_name: this.ordEmployeeName,
-      ordEmployeeName: this.ordCertificationName,
+      orderEmployeeName: this.ordEmployeeName,
+      ordCertificationName: this.ordCertificationName,
       ordEndDate: this.ordEndDate,
       offset: this.offset,
-      limit: this.limit
+      limit: this.limit,
     };
     sessionStorage.setItem('searchParams', JSON.stringify(searchParams));
   }
+
+    // Lấy danh sách department
+    getAllDepartment() {
+      this.departmentService.getAllDepartment().subscribe(
+        (data: any) => {
+          this.listDepartment = data.department;
+        },
+        (error) => {
+          console.error('部門を取得できません ', error);
+        }
+      );
+    }
 
   // Hiển thị danh sách employee
   getListEmployee(): void {
@@ -132,9 +144,10 @@ export class UserListComponent {
         } else {
           this.loading = false;
         }
-      }, error: (error : any) => {
-        this.router.navigate(['/system-error'])
-      }
+      }, error:() => {
+        const message = "システムエラーが発生しました。";
+        this.router.navigate(['/system-error'], {state: {messageInf: message}})
+      } 
     })
   }
 
@@ -145,18 +158,6 @@ export class UserListComponent {
     this.employeeName = this.searchForm.controls['employeeName'].value;
     this.departmentId = this.searchForm.controls['departmentId'].value;
     this.getListEmployee();
-  }
-
-  // Lấy danh sách department
-  getAllDepartment() {
-    this.departmentService.getAllDepartment().subscribe(
-      (data: any) => {
-        this.listDepartment = data.department;
-      },
-      (error) => {
-        console.error('部門を取得できません: ', error);
-      }
-    );
   }
 
   /**
@@ -199,5 +200,6 @@ export class UserListComponent {
     this.offset = page;
     this.getListEmployee();
   }
+
 }
 

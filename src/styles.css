@@ -326,7 +326,7 @@ main {
 }
 
 .content {
-  padding: 40px 0 80px;
+  padding: 80px 0 80px;
 }
 
 .content-main {
@@ -362,6 +362,7 @@ main {
 
 .title {
   font-size: 24px;
+  /* margin-top: 20px; */
   margin-bottom: 20px;
 }
 
@@ -625,8 +626,6 @@ background-color: rgb(249, 250, 253);
   font-size: 28px;
   color: #e10020;
 }
-
-
 
 
 .footer {

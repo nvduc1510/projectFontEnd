@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 export class HeaderComponent {
   constructor(
     private router: Router,
+    
   ) { }
 
   logout() {
@@ -15,4 +16,8 @@ export class HeaderComponent {
     this.router.navigate(['login']);
     return false;
   }
+  scrollToTop() {
+    window.scrollTo({top : 0, behavior: 'smooth'})
+  }
+  
 }

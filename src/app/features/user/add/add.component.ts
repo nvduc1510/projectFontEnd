@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { Department } from 'src/app/model/department';
@@ -20,7 +20,6 @@ export class AddComponent implements OnInit {
 
   employeeId: any;
 
-  // sssssssssssssssss
   listDepartment: Department[] = [];
   listCertification !: any[];
 
@@ -44,10 +43,8 @@ export class AddComponent implements OnInit {
   @ViewChild('employeeName') employeeName: ElementRef | undefined;
   @ViewChild('employeeLoginId') employeeLoginId: ElementRef | undefined;
 
-
-
   constructor(
-    private route: Router,
+    private router: Router,
     private fb: FormBuilder,
     private departmentService: DepartmentService,
     private certificationService: CertificationService,
@@ -80,7 +77,6 @@ export class AddComponent implements OnInit {
       validator: ValidateComponent.ConfirmPassword,
     })
   }
-
   ngOnInit() {
     this.errorMessage = history.state.errorMessage;
     this.getListCertification();
@@ -101,32 +97,39 @@ export class AddComponent implements OnInit {
   getListCertification(): void {
     this.certificationService.getAllCertification().subscribe(
       (data: any) => {
-        this.listCertification = data.department;
+        this.listCertification = data.certification;
       }
     );
   }
-
+  markControlDirtyTouched(formGroup : FormGroup) {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.controls[key];
+      if(control instanceof FormGroup) {
+        this.markControlDirtyTouched(control);
+      } else {
+        // control.markAsDirty();
+        control.markAllAsTouched();
+      }
+    })
+  }
   //biding dữ liệu sang màn confirm
   directionConfirm() {
     if (this.data.valid) {
-      this.isSubmit = false;
       const departmentId = this.data.value.departmentId;
       const department = this.listDepartment.find(d => d.departmentId == departmentId);
       const certificationId = this.data.value.certifications.certificationId;
       const certification = this.listCertification.find(c => c.certificationId == certificationId);
       let getData = { employeeForm: this.data.value, department: department, certification: certification }
-      this.route.navigate(['/user/confirm'], { state: { getData } });
+      this.router.navigate(['/user/confirm'], { state: { getData } });
     }
     else {
-      this.isSubmit = true;
+      this.markControlDirtyTouched(this.data);
     }
   }
 
   // Gán dữ liệu vào màn hình
   assignValue() {
-    // Truyền từ detail sang
     const dEmployeeId = history.state.employeeId;
-    // Truyền từ confirm sang
     const patchValue = history.state.data;
     // check certificationId
     const certificationId = patchValue?.certifications?.certificationId;
@@ -147,6 +150,9 @@ export class AddComponent implements OnInit {
         }
         password?.updateValueAndValidity();
         passwordConfirm?.updateValueAndValidity();
+        if (certificationId) {
+          this.hadCertification = true;
+        }
       }
       else {
         this.disEmployeeLoginId = true;
@@ -165,12 +171,11 @@ export class AddComponent implements OnInit {
         this.getEmployeeById(dEmployeeId);
       }
     } else {
-      if (certificationId) {
-        this.hadCertification = true;
-      }
-      this.data.patchValue(patchValue);
+        if (certificationId) {
+          this.hadCertification = true;
+        }
+        this.data.patchValue(patchValue);
     }
-
   }
 
   // xử lý validate certification
@@ -222,12 +227,17 @@ export class AddComponent implements OnInit {
   }
  
   cancel() {
-    this.route.navigate(['/user/list']);
+    const checkEmployeeId = this.data.get('employeeId')?.value;
+    if(checkEmployeeId != '' ) {
+      this.router.navigate(['/detail'], {state : {employeeId : checkEmployeeId }})
+    } else {
+      this.router.navigate(['/user/list']);
+    }
+    
   }
 
   ngAfterViewInit() {
     const id = history.state.employeeId; // Lấy giá trị của tham số 'id' từ route
-
     if (id) {
       // Focus vào hạng mục employeeName nếu có id trong route
       if (this.employeeName) {
@@ -240,4 +250,5 @@ export class AddComponent implements OnInit {
       }
     }
   }
+
 }

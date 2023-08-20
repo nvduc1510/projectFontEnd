@@ -59,7 +59,7 @@ export class ConfirmComponent {
 
     } else {
       const data = this.employeeForm;
-      this.route.navigate(['/user/add'],  { state: { data:data } });
+      this.route.navigate(['/user/add'],  { state: { data:`data` } });
     }
     
   }
@@ -79,8 +79,6 @@ export class ConfirmComponent {
       certifications:[]
     }
     const certification = this.employeeForm?.certifications;
-
-    
     if(certification.certificationId){
       certification.certificationEndDate = this.formatDate(certification.certificationEndDate);
       certification.certificationStartDate = this.formatDate(certification.certificationStartDate);
@@ -88,41 +86,39 @@ export class ConfirmComponent {
     }
     const checkEmployeeId = history.state.getData;
     const id = checkEmployeeId?.employeeForm.employeeId
+    const data = this.employeeForm;
     if(id) {
       // Thực hiện updateEmployee
       this.employeeService.updateEmployee(id, employeeData).subscribe({
         next: res => {
         const message = "ユーザの更新が完了しました。";
-        this.route.navigate(['messageAdd'], {state: {messageInf : message}})
-        console.log("a",employeeData);
+        this.route.navigate(['user/complete'], {state: {messageInf : message}})
         }, error: (err: HttpErrorResponse) => {
           if (err.status === 500) {
-            const message = '「アカウント名」は既に存在しています。'
-            const employeeFormValue = this.shareData.setData(this.employeeForm);
-            this.route.navigate(['messageAdd'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
+            this.route.navigate(['system-error'], { state: { messageInf: err.error.message.params }});   
+          } else {
+            const message ="システムエラーが発生しました。"
+            this.route.navigate(['system-error'], { state: {messageInf: message }})
           }
         }
       })
-      
+  
     } else {
       // Thực hiện tạo mới một employee
       this.employeeService.createEmployee(employeeData).subscribe({
         next: res => {
-          if(res.code === 200) {
             const message = "ユーザの登録が完了しました。";
-            this.route.navigate(['messageAdd'], { state: { messageInf: message } }); 
-            console.log("code: " ,res.code);
+            this.route.navigate(['user/complete'], { state: { messageInf: message } }); 
+        }, error: (err: HttpErrorResponse) => {
+          if (err.status === 500) {       
+            console.log("error: ", err);
+            this.route.navigate(['user/add'], { state: { data: data, errorMessage: err.error.params }});   
           } else {
-            const message = 'システムエラーが発生しました。'
-            const employeeFormValue = this.employeeForm;
-            console.log("check", employeeFormValue);
-            this.route.navigate(['user/add'], { state: { employeeForm: employeeFormValue, errorMessage: message }});   
+            const message ="システムエラーが発生しました。"
+            this.route.navigate(['system-error'], { state: {messageInf: message }})
           }
-        },
-        
+        }
       });
-      console.log("employee: ", employeeData);
-      
     }
   }
 

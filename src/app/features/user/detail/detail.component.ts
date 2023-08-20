@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Detail } from 'src/app/model/detail';
@@ -12,10 +13,9 @@ import { ShareDateService } from 'src/app/service/share-date.service';
 })
 export class DetailComponent {
   employee!: Detail;
-  employeeId: any;
-  employeeAdd !:any;
+  employeeId!: number;
 
-  certification: any;
+  certification : any; 
 
   isForm = false;
 
@@ -32,17 +32,12 @@ export class DetailComponent {
   ngOnInit(): void {
     // lấy employee qua employeeId truyền sang
     this.employeeId = history.state.employeeId;
-    this.employeeService.getEmployeeById(this.employeeId).subscribe(
-      (data) => {
+    this.employeeService.getEmployeeById(this.employeeId).subscribe ({
+      next : data => {
         this.employee = data;
         this.certification = this.employee?.certifications;
-        // Lưu thông tin nhân viên vào sessionStorage
-        // sessionStorage.setItem('employee', JSON.stringify(this.employee));
-      },
-      (error) => {
-        console.error(error);
       }
-    );
+    })
   }
   // hiển thị form thông báo xác nhận xoá
   click() {
@@ -59,22 +54,21 @@ export class DetailComponent {
       // Gọi employeeService để xóa nhân viên bằng cách sử dụng employeeId.
       this.employeeService.deleteEmployee(this.employee.employeeId).subscribe({
         next: res => {
-          // Kiểm tra phản hồi từ máy chủ để kiểm tra việc xóa thành công (code === 200)
           if (res.code === 200) {
-            const message = "ユーザの削除が完了しました。";
-            this.router.navigate(['messageAdd'], { state: { messageInf: message } });
+            this.router.navigate(['user/complete'], { state: { messageInf: res.message.params } });
           } else {
-            // Nếu mã phản hồi không phải 200, xử lý trường hợp lỗi.
             this.isForm = false;
             this.errorMes = res.message.params;
-            console.log("Test: ", this.errorMes);
           }
+        }, error :(error) => {
+            const message = "システムエラーが発生しました。"
+            this.router.navigate(['system-error'], {state: {messageInf : message}})
+          
         }
       });
     }
   }
   directionData(employeeId: any) {
     this.router.navigate(['/user/add'], { state: { employeeId } });
-    console.log("EmployeeId: ", employeeId);
   }
 }

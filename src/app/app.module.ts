@@ -10,7 +10,6 @@ import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from "@angular/common/http";
 import { TokenInterceptor } from './shared/auth/token.interceptor';
 import { FormsModule } from '@angular/forms';
-import { MessageAddComponent } from './features/message/message-add/message-add.component';
 import { MessageComponent } from './features/valid/message/message.component';
 import { ValidateComponent } from './features/valid/validate/validate.component';
 
@@ -20,7 +19,6 @@ import { ValidateComponent } from './features/valid/validate/validate.component'
     AppComponent,
     LoginComponent,
     SystemErrorComponent,
-    MessageAddComponent,
     MessageComponent,
     ValidateComponent,
 

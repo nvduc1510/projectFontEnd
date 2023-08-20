@@ -3,22 +3,21 @@
 		<div class="container">
             <app-header></app-header>
 			<div class="content">
-                <!-- <div>{{data.errors|json}}</div> -->
 				<div class="content-main">
 					<div class="row">
 						<form class="c-form box-shadow was-validated" [formGroup]="data" (ngSubmit)="directionConfirm()">
 							<ul>
-								<li class="title">会員情報編集</li>
+								<li class="title ">会員情報編集</li>
 								<li class="box-err" *ngIf="errorMessage">
 									<div class="box-err-content">{{ errorMessage }}</div>
 								</li>
                                 <!-- Textbox EmployeeLoginId----------------------------------------->
-                                
                                 <li class="form-group row d-flex">
                                     <label class="col-form-label col-sm-2"><i class="relative">アカウント名:<span class="note-red">*</span></i></label>
                                     <div class="col-sm col-sm-10">
                                         <input #employeeLoginId type="text" class="form-control" formControlName="employeeLoginId" [readonly] = 'disEmployeeLoginId' [class.readonLy]="disEmployeeLoginId" >
-                                        <div *ngIf="((data.get('employeeLoginId')?.errors) && ( data.get('employeeLoginId')?.touched))|| isSubmit ">
+                                        <div *ngIf="((data.get('employeeLoginId')?.errors) && ( data.get('employeeLoginId')?.touched)) " >
+                                        <!-- <div (click)=" maskControlDirtyTouched('employeeLoginId')" > -->
                                             <div class="invalid-feedback " >
                                                 {{data.controls['employeeLoginId'].errors?.['params']}}
                                             </div>
@@ -33,7 +32,7 @@
                                             <option value="">選択してください</option>
 											<option *ngFor="let de of listDepartment" [value]="de.departmentId">{{de?.departmentName}}</option>
 										</select>
-                                        <div *ngIf="(data.get('departmentId')?.errors && ( data.get('departmentId')?.touched  )) || isSubmit">
+                                        <div *ngIf="(data.get('departmentId')?.errors && ( data.get('departmentId')?.touched  )) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['departmentId'].errors?.['params']}}
                                             </div>
@@ -45,7 +44,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
                                         <input #employeeName type="text" class="form-control" formControlName="employeeName">
-                                        <div *ngIf=" (data.get('employeeName')?.errors && (data.get('employeeName')?.touched )) || isSubmit">
+                                        <div *ngIf=" (data.get('employeeName')?.errors && (data.get('employeeName')?.touched )) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeName'].errors?.['params']}}
                                             </div>
@@ -57,7 +56,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">カタカナ氏名:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                       
 										<input type="text" class="form-control" formControlName="employeeNameKana">
-                                        <div *ngIf="(data.get('employeeNameKana')?.errors && ( data.get('employeeNameKana')?.touched )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeNameKana')?.errors && ( data.get('employeeNameKana')?.touched )) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeNameKana'].errors?.['params']}}
                                             </div>
@@ -72,7 +71,7 @@
                                             <input class="form-control"  #dp="bsDatepicker" bsDatepicker readonly=""[bsValue]="bsValue" formControlName="employeeBirthDate" [bsConfig]="bsConfig" >
                                             <span  class="input-group-addon"><i (click)="dp.toggle()" class="glyphicon glyphicon-calendar" ></i></span>
                                         </div>
-                                        <div *ngIf=" (data.get('employeeBirthDate')?.errors && ( data.get('employeeBirthDate')?.touched)) || isSubmit">
+                                        <div *ngIf=" (data.get('employeeBirthDate')?.errors && ( data.get('employeeBirthDate')?.touched)) ">
                                             <div class="invalid-feedbacks">
                                                 {{data.controls['employeeBirthDate'].errors?.['params']}}
                                             </div>
@@ -84,7 +83,7 @@
 									<label class="col-form-label col-sm-2"><i class="relative">メールアドレス:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">                                     
                                         <input type="text" class="form-control" formControlName="employeeEmail">
-                                        <div *ngIf="(data.get('employeeEmail')?.errors && ( data.get('employeeEmail')?.touched )) || isSubmit">
+                                        <div *ngIf="(data.get('employeeEmail')?.errors && ( data.get('employeeEmail')?.touched )) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeEmail'].errors?.['params']}}
                                             </div>
@@ -95,8 +94,8 @@
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">電話番号:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">
-                                        <input type="text" class="form-control" formControlName="employeeTelephone">
-                                        <div *ngIf="(data.get('employeeTelephone')?.errors && ( data.get('employeeTelephone')?.touched)) || isSubmit">
+                                        <input type="text" class="form-control" formControlName="employeeTelephone"  autocomplete="username">
+                                        <div *ngIf="(data.get('employeeTelephone')?.errors && ( data.get('employeeTelephone')?.touched)) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeTelephone'].errors?.['params']}}
                                             </div>
@@ -107,8 +106,8 @@
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード:<span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10"> 
-                                        <input type="password" class="form-control" formControlName="employeeLoginPassword">
-                                        <div *ngIf="(data.get('employeeLoginPassword')?.errors && ( data.get('employeeLoginPassword')?.touched )) || isSubmit">
+                                        <input type="password" class="form-control" formControlName="employeeLoginPassword" autocomplete="current-password">
+                                        <div *ngIf="(data.get('employeeLoginPassword')?.errors && ( data.get('employeeLoginPassword')?.touched )) ">
                                             <div class="invalid-feedback">
                                                 {{data.controls['employeeLoginPassword'].errors?.['params']}}
                                             </div>
@@ -119,15 +118,15 @@
 								<li class="form-group row d-flex">
 									<label class="col-form-label col-sm-2"><i class="relative">パスワード（確認）:</i></label>
 									<div class="col-sm col-sm-10">      
-                                        <input type="password" class="form-control" formControlName="employeeLoginPasswordConfirm">
-                                        <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched )) || isSubmit">
+                                        <input type="password" class="form-control" formControlName="employeeLoginPasswordConfirm" autocomplete="new-password">
+                                        <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched )) ">
                                             <div class="invalid-feedback">
                                                 {{data.errors?.['params']}}
                                             </div>
                                         </div>
                                     </div>
 								</li>
-								<li class="title mt-12"><a href="#!">日本語能力</a></li>
+								<li class="title mt-12">日本語能力</li>
 
                                 <!-- Phần certification của employee---------------------------------------------------------->
                                 <div formGroupName="certifications">
@@ -152,7 +151,7 @@
                                                 <input class="form-control" readonly  #dp1="bsDatepicker" bsDatepicker [bsValue]="bsValue" formControlName="certificationStartDate" [bsConfig]="bsConfig" >
                                                 <span class="input-group-addon"><i (click)="dp1.toggle()" class="glyphicon glyphicon-calendar" ></i></span>
                                             </div>
-                                            <div *ngIf="data.get('certifications.certificationStartDate')?.errors && ( data.get('certifications.certificationStartDate')?.touched)">
+                                            <div *ngIf="(data.get('certifications.certificationStartDate')?.errors && ( data.get('certifications.certificationStartDate')?.touched)) ">
                                                 <div class="invalid-feedbacks">
                                                     {{data.get('certifications.certificationStartDate')?.errors?.['params']}}
                                                 </div>
@@ -167,20 +166,19 @@
                                                 <input class="form-control" readonly  #dp2="bsDatepicker" bsDatepicker  [bsValue]="bsValue" type="text" [bsConfig]="bsConfig" formControlName="certificationEndDate" />
                                                 <span class="input-group-addon"><i (click)="dp2.toggle()" class="glyphicon glyphicon-calendar"></i></span>
                                             </div>   
-                                            <div *ngIf="(data.get('certifications')?.errors || data.get('certifications.certificationEndDate')?.errors ) && ( data.get('certifications.certificationEndDate')?.touched)">
+                                            <div *ngIf="((data.get('certifications')?.errors || data.get('certifications.certificationEndDate')?.errors ) && ( data.get('certifications.certificationEndDate')?.touched)) ">
                                                 <div class="invalid-feedbacks">
                                                     {{data.get('certifications')?.errors?.['params'] || data.get('certifications.certificationEndDate')?.errors?.['params']}}
-                                                    <!-- {{data.get('certifications.certificationEndDate')?.errors?.['params']}} -->
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
                                     <!-- Textbox employeeCertificationScore-------------------------------------->
                                     <li class="form-group row d-flex">
-                                        <label class="col-form-label col-sm-2"><i class="relative">点数:</i></label>
+                                        <label class="col-form-label col-sm-2"><i class="relative">点数:<span class="note-red">*</span></i></label>
                                         <div class="col-sm col-sm-10">
                                             <input type="text" class="form-control" formControlName="" formControlName="employeeCertificationScore"> 
-                                            <div *ngIf="data.get('certifications.employeeCertificationScore')?.errors && ( data.get('certifications.employeeCertificationScore')?.touched)">
+                                            <div *ngIf="(data.get('certifications.employeeCertificationScore')?.errors && ( data.get('certifications.employeeCertificationScore')?.touched)) ">
                                                 <div class="invalid-feedback">
                                                     {{data.get('certifications.employeeCertificationScore')?.errors?.['params']}}
                                                 </div>
@@ -204,7 +202,6 @@
             <app-footer></app-footer>
 		</div>
 	</main>
-
     <ng-template #nonCertification>
         <li class="form-group row d-flex">
             <label class="col-form-label col-sm-2">資格交付日:</label>

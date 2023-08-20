@@ -9,6 +9,7 @@ import { AddComponent } from './add/add.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DetailComponent } from './detail/detail.component';
+import { CompleteComponent } from './complete/complete.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { DetailComponent } from './detail/detail.component';
     AddComponent,
     ConfirmComponent,
     DetailComponent,
+    CompleteComponent,
     
   ],
   imports: [

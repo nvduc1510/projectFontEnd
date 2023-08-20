@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-message-add',
-  templateUrl: './message-add.component.html',
-  styleUrls: ['./message-add.component.css']
+  selector: 'app-complete',
+  templateUrl: './complete.component.html',
+  styleUrls: ['./complete.component.css']
 })
-export class MessageAddComponent {
-
+export class CompleteComponent {
   message: string = '';
   constructor(private router: Router){}
   
@@ -32,5 +31,4 @@ export class MessageAddComponent {
     // Chuyển hướng sang màn hình List
     this.router.navigate(['user/list']);
   }
-
 }
