@@ -6,6 +6,7 @@
   .css-grid-table-header > div,
   .css-grid-table-body > div {
     overflow: hidden;
+    word-wrap: break-word;
     text-overflow: ellipsis; 
   }
   

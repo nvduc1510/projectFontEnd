@@ -43,8 +43,6 @@ export class ConfirmComponent {
     this.employeeForm = this.data?.employeeForm;
     this.employeeCertification = this.data?.employeeForm.certifications;
     this.certification = this.data?.certification;
-    console.log("form: ", this.employeeForm);
-    
   }
 
   /**
@@ -59,7 +57,7 @@ export class ConfirmComponent {
 
     } else {
       const data = this.employeeForm;
-      this.route.navigate(['/user/add'],  { state: { data:`data` } });
+      this.route.navigate(['/user/add'],  { state: { data: data } });
     }
     
   }
@@ -111,7 +109,6 @@ export class ConfirmComponent {
             this.route.navigate(['user/complete'], { state: { messageInf: message } }); 
         }, error: (err: HttpErrorResponse) => {
           if (err.status === 500) {       
-            console.log("error: ", err);
             this.route.navigate(['user/add'], { state: { data: data, errorMessage: err.error.params }});   
           } else {
             const message ="システムエラーが発生しました。"

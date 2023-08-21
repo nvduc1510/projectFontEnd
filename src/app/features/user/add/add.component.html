@@ -116,7 +116,7 @@
 								</li>
                                 <!--Textbox employeeLoginPasswordConfirm  -------------------------------->
 								<li class="form-group row d-flex">
-									<label class="col-form-label col-sm-2"><i class="relative">パスワード（確認）:</i></label>
+									<label class="col-form-label col-sm-2"><i class="relative">パスワード（確認）: <span class="note-red">*</span></i></label>
 									<div class="col-sm col-sm-10">      
                                         <input type="password" class="form-control" formControlName="employeeLoginPasswordConfirm" autocomplete="new-password">
                                         <div *ngIf="(data?.errors && ( data.get('employeeLoginPasswordConfirm')?.touched )) ">

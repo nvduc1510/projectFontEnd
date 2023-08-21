@@ -32,7 +32,7 @@ export class UserListComponent {
   totalPages = 0;
   totalRecords = 0;
   offset = 1;
-  limit = 20;
+  limit = 5;
   
   //search
   searchForm !: FormGroup;
@@ -51,6 +51,7 @@ export class UserListComponent {
     private router: Router,
     private fb: FormBuilder
   ) {
+    //Thực hiện tạo một form search
     this.searchForm = this.fb.group({
       employeeName: [''],
       departmentId: [''],
@@ -72,55 +73,48 @@ export class UserListComponent {
     });
     // Xoá session khi F5
     window.addEventListener('beforeunload', () => {
-      sessionStorage.removeItem('searchParams');
+      sessionStorage.removeItem('saveData');
     });
-
-    /**
-     * Thực hiện tạo một form search
-     */
-
-    this.getListEmployee();
-    this.getAllDepartment();
-
+     
     // Lấy lại điều kiện sort,search,page khi back về ADM002
-    const searchParams = JSON.parse(sessionStorage.getItem('searchParams') || '{}');
-    this.employeeName = searchParams.employeeName || '';
-    this.departmentId = searchParams.departmentId || '';
-    this.ordEmployeeName = searchParams.ordEmployeeName || '';
-    this.ordCertificationName = searchParams.ordCertificationName || '';
-    this.ordEndDate = searchParams.ordEndDate || '';
-    this.offset = searchParams.offset || 1;
-    this.limit = searchParams.limit || 20;
+    const saveData = JSON.parse(sessionStorage.getItem('saveData') || '{}');
+    this.employeeName = saveData.employeeName || '';
+    this.departmentId = saveData.departmentId || '';
+    this.ordEmployeeName = saveData.ordEmployeeName || '';
+    this.ordCertificationName = saveData.ordCertificationName || '';
+    this.ordEndDate = saveData.ordEndDate || '';
+    this.offset = saveData.offset || 1;
+    this.limit = saveData.limit || 5;
     this.currentPage = this.offset / this.limit + 1;
     this.getListEmployee();
     this.getAllDepartment();
-    
   }
   // Lưu điều kiện sort,search,page vào session khi component kết thúc vòng đời
   ngOnDestroy(): void {
-    const searchParams = {
-      employeeName: this.employeeName,
-      departmentId: this.departmentId,
-      orderEmployeeName: this.ordEmployeeName,
-      ordCertificationName: this.ordCertificationName,
-      ordEndDate: this.ordEndDate,
-      offset: this.offset,
-      limit: this.limit,
-    };
-    sessionStorage.setItem('searchParams', JSON.stringify(searchParams));
+   const employeeForm = JSON.stringify({
+    employeeName : this.employeeName,
+    departmentId : this.departmentId,
+    ordEmployeeName : this.ordEmployeeName,
+    ordCertificationName : this.ordCertificationName,
+    ordEndDate : this.ordEndDate,
+    currentPage: this.currentPage,
+    offset: this.offset,
+    limit: this.limit
+   });
+   sessionStorage.setItem('saveData', employeeForm);
   }
 
-    // Lấy danh sách department
-    getAllDepartment() {
-      this.departmentService.getAllDepartment().subscribe(
-        (data: any) => {
-          this.listDepartment = data.department;
-        },
-        (error) => {
-          console.error('部門を取得できません ', error);
-        }
-      );
-    }
+  // Lấy danh sách department
+  getAllDepartment() {
+    this.departmentService.getAllDepartment().subscribe(
+      (data: any) => {
+        this.listDepartment = data.department;
+      },
+      (error) => {
+        console.error('部門を取得できません ', error);
+      }
+    );
+  }
 
   // Hiển thị danh sách employee
   getListEmployee(): void {

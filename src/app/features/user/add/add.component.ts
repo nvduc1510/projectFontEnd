@@ -206,9 +206,8 @@ export class AddComponent implements OnInit {
   getEmployeeById(employeeId: any) {
     this.employeeService.getEmployeeById(employeeId).subscribe(
       (response) => {
-        console.log(response);
         this.data.patchValue(response);
-        if (response.certifications[0].certificationName == null) {
+        if (response.certifications[0].certificationId == null) {
           this.data.patchValue({
             certificationId: "",
             certificationStartDate: null,

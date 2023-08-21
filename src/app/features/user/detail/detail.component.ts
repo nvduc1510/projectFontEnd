@@ -54,15 +54,17 @@ export class DetailComponent {
       // Gọi employeeService để xóa nhân viên bằng cách sử dụng employeeId.
       this.employeeService.deleteEmployee(this.employee.employeeId).subscribe({
         next: res => {
-          if (res.code === 200) {
             this.router.navigate(['user/complete'], { state: { messageInf: res.message.params } });
-          } else {
-            this.isForm = false;
-            this.errorMes = res.message.params;
-          }
-        }, error :(error) => {
-            const message = "システムエラーが発生しました。"
-            this.router.navigate(['system-error'], {state: {messageInf : message}})
+
+        }, error :(error: HttpErrorResponse) => {
+            if(error.status === 500) {
+              this.isForm = false;
+              this.errorMes = error.error.message.params;
+            } else {
+              const message = "システムエラーが発生しました。"
+              this.router.navigate(['system-error'], {state: {messageInf : message}})
+            }
+            
           
         }
       });
