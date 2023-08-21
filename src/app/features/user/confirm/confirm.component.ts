@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AddEmployeeDTO } from 'src/app/model/addEmployeeDTO';
 import { EmployeeService } from 'src/app/service/employee.service';
-import { ShareDateService } from 'src/app/service/share-date.service';
 
 @Component({
   selector: 'app-confirm',
@@ -13,17 +12,14 @@ import { ShareDateService } from 'src/app/service/share-date.service';
 export class ConfirmComponent {
   addEmployee !: AddEmployeeDTO;
   data : any;
-  public employeeForm:any;
-  public department : any;
-  public certification : any;
-  public employeeCertification : any;
-
-  isCheckId = false;
+  employeeForm:any;
+  department : any;
+  certification : any;
+  employeeCertification : any;
 
   constructor (
     private route : Router,
-    private employeeService : EmployeeService,
-    private shareData : ShareDateService ) {}
+    private employeeService : EmployeeService ) {}
 
   private formatDate(dateStr: string): string {
     // Định dạng ngày tháng năm
@@ -38,6 +34,12 @@ export class ConfirmComponent {
   }
 
   ngOnInit() {
+    this.getFormData();
+  }
+  /**
+   * Thực hiện lấy dữ liệu từ màn Add_edit truyền sang
+   */
+  getFormData() {
     this.data = history.state.getData;
     this.department = this.data?.department;
     this.employeeForm = this.data?.employeeForm;
@@ -54,15 +56,15 @@ export class ConfirmComponent {
     if(employeeId){
       const data = this.employeeForm;
       this.route.navigate(['/user/add'],  { state: { data:data, employeeId : employeeId } });
-
     } else {
       const data = this.employeeForm;
       this.route.navigate(['/user/add'],  { state: { data: data } });
     }
-    
   }
 
-  // Xử lý dữ liệu từ form
+  /**
+   *  Xử lý dữ liệu từ form
+   */
   onSubmit() {
     const employeeData : AddEmployeeDTO = {
       departmentId: this.employeeForm.departmentId,

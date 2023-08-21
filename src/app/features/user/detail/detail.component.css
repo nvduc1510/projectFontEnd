@@ -1,15 +1,16 @@
 .confirmationForm {
-    /* display: none; */
+
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-55%, -90%);
     background-color: #ffffff;
     border: 1px solid #cccccc;
-    padding: 20px;
+    padding: 40px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
+    max-width: 800px;
+    height: 160px;
     text-align: center;
     z-index: 3;
 }
@@ -19,8 +20,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Màu mờ, bạn có thể điều chỉnh giá trị alpha để điều chỉnh độ mờ */
-    z-index: 2; /* Đảm bảo nền hiển thị phía trên form */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2; 
 }
 
 .confirmationForm.show {
@@ -35,10 +36,8 @@
 }
 
 .confirmationForm button {
-    margin-right: 10px;
+    margin: 10px 10px 0 0;
     padding: 8px 16px;
-    /* background-color: #007bff; */
-    color: #ffffff;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -46,23 +45,23 @@
     transition: background-color 0.3s ease;
 }
 
-.confirmationForm button#cancelDelete {
-    background-color: #e74c3c;
-    /* Đổi màu nút Xác nhận thành màu đỏ */
-}
-
 .confirmDelete {
     background-color:#57b846;
-    /* Nút Xác nhận có màu đỏ */
+    color: #ffffff;
+    min-width: 100px;
+    height: 40px;
 }
 
 .cancelDelete {
     background-color: #ccc;
+    color: #ffffff;
+    min-width: 100px;
+    height: 40px;
 }
 
+/* Xóa khoảng cách giữa hai nút */
 .confirmationForm button:last-child {
     margin-right: 0;
-    /* Xóa khoảng cách giữa hai nút */
 }
 
 .confirmDelete:hover,
@@ -70,7 +69,6 @@
     opacity: 0.8;
 }
 
-/* Optionally, add a fade-in effect when the form is displayed */
 .confirmationForm.ng-enter {
     opacity: 0;
 }
@@ -83,4 +81,22 @@
     .confirmationForm {
         max-width: 100%;
     }
+}
+
+
+.closeButton {
+    position: absolute;
+    top: -8px;
+    right: -8px;   
+    padding: 10px;
+    font-size: 16px;
+    color: #333333;
+    cursor: pointer;
+    border-radius: 50%;
+    outline: none;
+}
+
+.closeButton:hover {
+    color: #777777; 
+    opacity: 0.8;
 }

@@ -3,47 +3,53 @@
   word-wrap: break-word;
 }
 
-/* Adjust the column widths as needed */
 .css-grid-table-header>div,
 .css-grid-table-body>div {
   overflow: hidden;
   word-wrap: break-word;
   text-overflow: ellipsis;
 }
+
 @media screen  and (min-width: 961px) and (max-width: 1049px) {
   .search-memb {
-    margin: 0 18px;
+    padding: 0 10px;
+  }
+  .search-memb input,
+  .search-memb select {
+    width: 220px;
+  }
+  .form-group{
+    
+    justify-content: space-around;
   }
   .row-table {
-    margin: 40px 18px
+    margin: 40px 10px
   }
-  
 }
 
 @media screen and (min-width: 850px) and (max-width: 960px) {
   .search-memb {
     display: flex;
     flex-direction: column;
-    margin: 0 18px;
+    margin: 0 10px;
   }
-
   .search-memb input,
   .search-memb select {
-    width: 220px;
+    width: 200px;
   }
   .row-table {
-    margin: 40px 18px
+    margin: 40px 10px
   }
-
+  .form-group{
+    justify-content: space-around;
+  }
 }
-
 
 @media screen and (max-width: 849px) {
   .search-memb {
     display: flex;
     flex-direction: column;
     text-align: center;
-
   }
 
   .d-flex {
@@ -54,7 +60,6 @@
   .d-flex>li {
     padding-bottom: 10px;
   }
-
   .search-memb input,
   .search-memb select {
     width: 260px;
@@ -72,8 +77,9 @@
     margin-left: 100px;
   }
   .row-table {
-    margin: 40px 18px
+    margin: 40px 10px
   }
+
 }
 
 @media screen and (max-width: 450px) {

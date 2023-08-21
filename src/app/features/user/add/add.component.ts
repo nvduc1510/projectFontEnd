@@ -225,6 +225,9 @@ export class AddComponent implements OnInit {
     );
   }
  
+  /**
+   * Thực hiện thoát khỏi màn Add
+   */
   cancel() {
     const checkEmployeeId = this.data.get('employeeId')?.value;
     if(checkEmployeeId != '' ) {
@@ -235,8 +238,12 @@ export class AddComponent implements OnInit {
     
   }
 
+  /**
+   * Thực hiện forcus hạng mục
+   */
   ngAfterViewInit() {
-    const id = history.state.employeeId; // Lấy giá trị của tham số 'id' từ route
+    // Lấy giá trị của tham số 'id' từ route
+    const id = history.state.employeeId; 
     if (id) {
       // Focus vào hạng mục employeeName nếu có id trong route
       if (this.employeeName) {

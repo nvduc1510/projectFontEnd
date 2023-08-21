@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Detail } from 'src/app/model/detail';
 import { EmployeeService } from 'src/app/service/employee.service';
-import { ShareDateService } from 'src/app/service/share-date.service';
 
 
 @Component({
@@ -26,8 +25,7 @@ export class DetailComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private employeeService: EmployeeService,
-    private shareData : ShareDateService) { }
+    private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
     // lấy employee qua employeeId truyền sang

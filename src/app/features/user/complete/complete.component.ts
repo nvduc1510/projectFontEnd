@@ -25,6 +25,7 @@ export class CompleteComponent {
       }
     }
   }
+  // Chuyển hướng đến màn List
   navigateToList() {
     // Xóa thông báo từ sessionStorage
     sessionStorage.removeItem('message');

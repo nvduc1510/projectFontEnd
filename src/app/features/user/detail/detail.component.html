@@ -90,7 +90,9 @@
 						</form>
 					</div>
 				</div>
+				<div class="backdrop" *ngIf="isForm"></div>
 				<div class="confirmationForm" *ngIf="isForm">
+					<button class="closeButton" (click)="cancelForm()">x</button>
 					<h2>削除しますが、よろしいでしょうか。</h2>
 					<button class="confirmDelete" (click)="deleteEmployee()">OK</button>
 					<button class="cancelDelete" (click)="cancelForm()">Cancel</button>
