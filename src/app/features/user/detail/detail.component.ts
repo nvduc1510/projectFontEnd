@@ -63,9 +63,7 @@ export class DetailComponent {
             } else {
               const message = "システムエラーが発生しました。"
               this.router.navigate(['system-error'], {state: {messageInf : message}})
-            }
-            
-          
+            } 
         }
       });
     }

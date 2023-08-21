@@ -1,13 +1,74 @@
-.text-wrap{
-    white-space: pre-wrap;
-    word-wrap: break-word;
-  }
-  /* Adjust the column widths as needed */
-  .css-grid-table-header > div,
-  .css-grid-table-body > div {
-    overflow: hidden;
-    word-wrap: break-word;
-    text-overflow: ellipsis; 
-  }
-  
+.text-wrap {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 
+/* Adjust the column widths as needed */
+.css-grid-table-header>div,
+.css-grid-table-body>div {
+  overflow: hidden;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 850px) and (max-width: 960px) {
+  .search-memb {
+    display: flex;
+    flex-direction: column;
+    /* text-align: center; */
+  }
+
+  .search-memb input,
+  .search-memb select {
+    width: 220px;
+
+  }
+}
+
+@media screen and (max-width: 849px) {
+  .search-memb {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+  }
+
+  .d-flex {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .d-flex>li {
+    padding-bottom: 10px;
+  }
+
+  .search-memb input,
+  .search-memb select {
+    width: 260px;
+  }
+
+  .search-memb label {
+    min-width: 100px;
+  }
+
+  .search-memb {
+    padding: 0 10px;
+  }
+
+  .search-memb .form-group .btn-group {
+    margin-left: 100px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .search-memb {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .search-memb input,
+  .search-memb select {
+    width: 210px;
+
+  }
+}

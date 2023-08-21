@@ -75,7 +75,7 @@ export class UserListComponent {
     window.addEventListener('beforeunload', () => {
       sessionStorage.removeItem('saveData');
     });
-     
+  
     // Lấy lại điều kiện sort,search,page khi back về ADM002
     const saveData = JSON.parse(sessionStorage.getItem('saveData') || '{}');
     this.employeeName = saveData.employeeName || '';
@@ -86,22 +86,25 @@ export class UserListComponent {
     this.offset = saveData.offset || 1;
     this.limit = saveData.limit || 5;
     this.currentPage = this.offset / this.limit + 1;
+    
+    console.log("thử: ",this.searchForm.controls['departmentId'].value );
+    
     this.getListEmployee();
     this.getAllDepartment();
   }
   // Lưu điều kiện sort,search,page vào session khi component kết thúc vòng đời
   ngOnDestroy(): void {
-   const employeeForm = JSON.stringify({
-    employeeName : this.employeeName,
-    departmentId : this.departmentId,
-    ordEmployeeName : this.ordEmployeeName,
-    ordCertificationName : this.ordCertificationName,
-    ordEndDate : this.ordEndDate,
-    currentPage: this.currentPage,
-    offset: this.offset,
-    limit: this.limit
-   });
-   sessionStorage.setItem('saveData', employeeForm);
+      const employeeForm = JSON.stringify({
+      employeeName : this.employeeName,
+      departmentId : this.departmentId,
+      ordEmployeeName : this.ordEmployeeName,
+      ordCertificationName : this.ordCertificationName,
+      ordEndDate : this.ordEndDate,
+      currentPage: this.currentPage,
+      offset: this.offset,
+      limit: this.limit
+    });
+    sessionStorage.setItem('saveData', employeeForm);
   }
 
   // Lấy danh sách department
